@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class TwoDimensionalClient implements ClientModInitializer {
-    public static Plane plane = new Plane(new Vec3d(0, 0, 0), MathHelper.PI/4);
+    public static Plane plane = null;
 
     @Override
     public void onInitializeClient() {

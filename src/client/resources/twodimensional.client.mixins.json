@@ -4,7 +4,6 @@
   "package": "github.mishkis.twodimensional.client.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "BlockRenderManagerMixin",
     "GameRendererMixin"
   ],
   "injectors": {
@@ -12,5 +11,7 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+  ]
 }

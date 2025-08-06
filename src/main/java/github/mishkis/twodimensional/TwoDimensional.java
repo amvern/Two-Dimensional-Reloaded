@@ -20,16 +20,15 @@ public class TwoDimensional implements ModInitializer {
     @Override
     public void onInitialize() {
         ServerPlayConnectionEvents.JOIN.register(((serverPlayNetworkHandler, packetSender, minecraftServer) -> {
+            LOGGER.info("hey");
             Plane plane = PlanePersistentState.getPlayerPlane(serverPlayNetworkHandler.getPlayer());
-            if (plane != null) {
-                PacketByteBuf data = PacketByteBufs.create();
-                data.writeDouble(plane.getOffset().x);
-                data.writeDouble(plane.getOffset().z);
-                data.writeDouble(plane.getYaw());
-                minecraftServer.execute(() -> {
-                    ServerPlayNetworking.send(serverPlayNetworkHandler.getPlayer(), INITIAL_SYNC, data);
-                });
-            }
+            PacketByteBuf data = PacketByteBufs.create();
+            data.writeDouble(plane.getOffset().x);
+            data.writeDouble(plane.getOffset().z);
+            data.writeDouble(plane.getYaw());
+            minecraftServer.execute(() -> {
+                ServerPlayNetworking.send(serverPlayNetworkHandler.getPlayer(), INITIAL_SYNC, data);
+            });
         }));
     }
 }

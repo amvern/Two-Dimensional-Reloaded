@@ -1,5 +1,6 @@
 package github.mishkis.twodimensional.utils;
 
+import net.minecraft.network.encryption.ClientPlayerSession;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -52,12 +53,16 @@ public class Plane {
 
     // Positive is defined as being counter-clockwise
     public double sdf(Vec3d point) {
-        // slope(x - offset.x) + offset.z = (-1/slope)(x - point.x) + point.z
-        double x = (slope * offset.x - offset.z + point.x * 1/slope + point.z)/(slope + 1/slope);
-        double z = slope * (x - offset.x) + offset.z;
+        if (this.getYaw() % MathHelper.PI != 0) {
+            // slope(x - offset.x) + offset.z = (-1/slope)(x - point.x) + point.z
+            double x = (slope * offset.x - offset.z + point.x * 1 / slope + point.z) / (slope + 1 / slope);
+            double z = slope * (x - offset.x) + offset.z;
 
-        Vec3d to_point = new Vec3d(point.x - x, 0, point.z - z);
-        return to_point.length() * MathHelper.sign(to_point.dotProduct(normal));
+            Vec3d to_point = new Vec3d(point.x - x, 0, point.z - z);
+            return to_point.length() * MathHelper.sign(to_point.dotProduct(normal));
+        } else {
+            return point.z - offset.z;
+        }
     }
 
     @Override

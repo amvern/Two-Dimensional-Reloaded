@@ -78,6 +78,6 @@ public class PlanePersistentState extends PersistentState {
 
         Plane plane = serverState.players.computeIfAbsent(player.getUuid(), uuid -> new Plane(Vec3d.ZERO, 0));
 
-        return serverState.players.get(player);
+        return plane;
     }
 }
