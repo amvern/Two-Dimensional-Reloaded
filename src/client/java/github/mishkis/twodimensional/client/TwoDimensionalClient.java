@@ -1,6 +1,5 @@
 package github.mishkis.twodimensional.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.client.rendering.TwoDimensionalShaders;
 import github.mishkis.twodimensional.utils.Plane;
@@ -8,7 +7,6 @@ import ladysnake.satin.api.event.PostWorldRenderCallback;
 import ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class TwoDimensionalClient implements ClientModInitializer {

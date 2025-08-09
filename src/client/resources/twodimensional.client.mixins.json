@@ -6,7 +6,9 @@
   "client": [
     "AbstractBlockStateAccessor",
     "AbstractBlockStateMixin",
-    "BlockMixin"
+    "BlockMixin",
+    "CameraMixin",
+    "GameOptionsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -15,5 +17,6 @@
     "requireAnnotations": true
   },
   "mixins": [
+    "EntityMixin"
   ]
 }
