@@ -78,4 +78,16 @@ public class PlanePersistentState extends PersistentState {
 
         return serverState.players.get(player.getUuid());
     }
+
+    public static void setPlayerPlane(PlayerEntity player, double x, double z, double yaw) {
+        PlanePersistentState serverState = getServerState(player.getWorld().getServer());
+
+        serverState.players.put(player.getUuid(), new Plane(new Vec3d(x, 0, z), yaw));
+    }
+
+    public static void removePlayerPlane(PlayerEntity player) {
+        PlanePersistentState serverState = getServerState(player.getWorld().getServer());
+
+        serverState.players.remove(player.getUuid());
+    }
 }

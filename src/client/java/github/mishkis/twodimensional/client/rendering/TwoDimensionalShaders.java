@@ -3,6 +3,7 @@ package github.mishkis.twodimensional.client.rendering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.client.TwoDimensionalClient;
+import github.mishkis.twodimensional.utils.Plane;
 import ladysnake.satin.api.event.PostWorldRenderCallback;
 import ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import ladysnake.satin.api.experimental.ReadableDepthFramebuffer;
@@ -43,8 +44,12 @@ public class TwoDimensionalShaders implements PostWorldRenderCallback, ShaderEff
         uniformInverseTransformMatrix.set(GlMatrices.getInverseTransformMatrix(projectionMatrix));
 
         uniformCameraPos.set(camera.getPos().toVector3f());
-        uniformPlaneOffset.set(TwoDimensionalClient.plane.getOffset().toVector3f());
-        uniformPlaneSlope.set((float) (TwoDimensionalClient.plane.getSlope()));
+
+        Plane plane = TwoDimensionalClient.plane;
+        if (plane != null) {
+            uniformPlaneOffset.set(TwoDimensionalClient.plane.getOffset().toVector3f());
+            uniformPlaneSlope.set((float) (TwoDimensionalClient.plane.getSlope()));
+        }
 
         float[] fogColor = RenderSystem.getShaderFogColor();
         uniformSkyColor.set(fogColor[0], fogColor[1], fogColor[2]);

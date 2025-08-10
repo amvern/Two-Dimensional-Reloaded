@@ -55,11 +55,8 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
     private Plane plane = null;
 
     @Override
+    @Nullable
     public Plane twoDimensional$getPlane() {
-        if (this.getWorld().isClient) {
-            return TwoDimensionalClient.plane;
-        }
-
         return plane;
     }
 

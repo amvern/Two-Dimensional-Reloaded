@@ -1,13 +1,20 @@
 package github.mishkis.twodimensional;
 
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.logging.Logger;
 
@@ -15,21 +22,96 @@ public class TwoDimensional implements ModInitializer {
     public static final String MOD_ID = "two_dimensional";
     public static final Logger LOGGER = Logger.getLogger(MOD_ID);
 
-    public static final Identifier INITIAL_SYNC = new Identifier(MOD_ID, "initial_sync");
+    public static final Identifier PLANE_SYNC = new Identifier(MOD_ID, "plane_sync");
+    public static final Identifier PLANE_REMOVE = new Identifier(MOD_ID, "plane_remove");
+
+    private Text updatePlane(MinecraftServer minecraftServer, ServerPlayerEntity player, double x, double z, double yaw) {
+        yaw *= MathHelper.RADIANS_PER_DEGREE;
+
+        PlanePersistentState.setPlayerPlane(player, x, z, yaw);
+        PacketByteBuf data = PacketByteBufs.create();
+        data.writeDouble(x);
+        data.writeDouble(z);
+        data.writeDouble(yaw);
+        minecraftServer.execute(() -> {
+            ServerPlayNetworking.send(player, PLANE_SYNC, data);
+        });
+
+        return Text.literal("Active plane set to an offset of [%f, %f], and a yaw of %f.".formatted(x, z, yaw));
+    }
+
+    private Text removePlane(MinecraftServer minecraftServer, ServerPlayerEntity player) {
+        PlanePersistentState.removePlayerPlane(player);
+        minecraftServer.execute(() -> {
+            ServerPlayNetworking.send(player, PLANE_REMOVE, PacketByteBufs.empty());
+        });
+        return Text.literal("Active plane set to none.");
+    }
 
     @Override
     public void onInitialize() {
         ServerPlayConnectionEvents.JOIN.register(((serverPlayNetworkHandler, packetSender, minecraftServer) -> {
             Plane plane = PlanePersistentState.getPlayerPlane(serverPlayNetworkHandler.getPlayer());
             if (plane != null) {
-                PacketByteBuf data = PacketByteBufs.create();
-                data.writeDouble(plane.getOffset().x);
-                data.writeDouble(plane.getOffset().z);
-                data.writeDouble(plane.getYaw());
-                minecraftServer.execute(() -> {
-                    ServerPlayNetworking.send(serverPlayNetworkHandler.getPlayer(), INITIAL_SYNC, data);
-                });
+                updatePlane(minecraftServer, serverPlayNetworkHandler.getPlayer(), plane.getOffset().x, plane.getOffset().z, plane.getYaw());
+            }
+        }));
+
+        CommandRegistrationCallback.EVENT.register(((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> {
+            if (registrationEnvironment.integrated) {
+                commandDispatcher.register(CommandManager.literal("TwoDimensional").
+                        then(CommandManager.literal("default").executes(commandContext -> {
+                            ServerPlayerEntity player = commandContext.getSource().getPlayer();
+                            if (player != null) {
+                                commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
+                                        player.getBlockX() + 0.5, player.getBlockZ() + 0.5, 0.
+                                ), false);
+                                return 1;
+                            }
+
+                            commandContext.getSource().sendError(Text.literal("This command can only be called from a player!"));
+                            return 0;
+                        }))
+                        .then(CommandManager.literal("from_yaw").then(CommandManager.argument("yaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
+                            ServerPlayerEntity player = commandContext.getSource().getPlayer();
+                            if (player != null) {
+                                commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
+                                        player.getBlockX() + 0.5, player.getBlockZ() + 0.5, DoubleArgumentType.getDouble(commandContext, "yaw")
+                                ), false);
+                                return 1;
+                            }
+
+                            commandContext.getSource().sendError(Text.literal("This command can only be called from a player!"));
+                            return 0;
+                        })))
+                        .then(CommandManager.literal("custom").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(1)).then(
+                                CommandManager.argument("offset_x", DoubleArgumentType.doubleArg()).then(
+                                        CommandManager.argument("offset_z", DoubleArgumentType.doubleArg()).then(
+                                                CommandManager.argument("yaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
+                                                    ServerPlayerEntity player = commandContext.getSource().getPlayer();
+                                                    if (player != null) {
+                                                        commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
+                                                                DoubleArgumentType.getDouble(commandContext, "offset_x"), DoubleArgumentType.getDouble(commandContext, "offset_z"), DoubleArgumentType.getDouble(commandContext, "yaw")
+                                                        ), true);
+                                                        return 1;
+                                                    }
+
+                                                    commandContext.getSource().sendError(Text.literal("This command can only be called from a player!"));
+                                                    return 0;
+                                                })))))
+                        .then(CommandManager.literal("disable").executes(commandContext -> {
+                            ServerPlayerEntity player = commandContext.getSource().getPlayer();
+                            if (player != null) {
+                                commandContext.getSource().sendFeedback(() -> removePlane(commandContext.getSource().getServer(), commandContext.getSource().getPlayer()), false);
+                                return 1;
+                            }
+
+                            commandContext.getSource().sendError(Text.literal("This command can only be called from a player!"));
+                            return 0;
+                        }))
+                );
             }
         }));
     }
+
 }

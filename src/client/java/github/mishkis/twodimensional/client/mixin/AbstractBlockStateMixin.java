@@ -1,5 +1,6 @@
 package github.mishkis.twodimensional.client.mixin;
 
+import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.client.TwoDimensionalClient;
 import github.mishkis.twodimensional.utils.Plane;
 import net.minecraft.block.AbstractBlock;
@@ -26,10 +27,11 @@ public class AbstractBlockStateMixin {
         }
     }
 
+    // it has to always be false, which means that lighting will be broken when not in 2d
+    // seems minecraft probably caches these values at some point during joining the world
+    // possibly fixable by clearing that cache, but I don't have time rn
     @Inject(method = "isOpaque", at = @At("HEAD"), cancellable = true)
     private void isOpaque(CallbackInfoReturnable<Boolean> cir) {
-        if (TwoDimensionalClient.plane != null) {
-             cir.setReturnValue(false);
-        }
+        cir.setReturnValue(false);
     }
 }
