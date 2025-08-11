@@ -1,0 +1,35 @@
+{
+  "targets": [
+    "desaturate",
+    "fog",
+    "blur",
+    "vignette"
+  ],
+  "passes": [
+    {
+      "name": "two_dimensional:desaturate",
+      "intarget": "minecraft:main",
+      "outtarget": "desaturate"
+    },
+    {
+      "name": "two_dimensional:fog",
+      "intarget": "desaturate",
+      "outtarget": "fog"
+    },
+    {
+      "name": "two_dimensional:distance_blur",
+      "intarget": "fog",
+      "outtarget": "blur"
+    },
+    {
+      "name": "two_dimensional:vignette",
+      "intarget": "blur",
+      "outtarget": "vignette"
+    },
+    {
+      "name": "blit",
+      "intarget": "vignette",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

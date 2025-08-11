@@ -6,11 +6,10 @@ uniform sampler2D DepthSampler;
 uniform mat4 InverseTransformMatrix;
 uniform mat4 ModelViewMat;
 uniform vec3 CameraPos;
-uniform vec3 SkyColor;
-uniform vec2 LightLevel;
 
 uniform vec3 PlaneOffset;
 uniform float PlaneSlope;
+uniform vec3 PlaneNormal;
 
 in vec2 texCoord;
 
@@ -22,18 +21,16 @@ float sdf(vec3 point) {
     vec3 to_point = vec3(point.x - x, 0, point.z - z);
 
     // we can assume it's always positive as negative would be culled
-    return length(to_point);
+    return length(to_point) * sign(dot(to_point, PlaneNormal));
 }
 
 void main() {
     vec4 tex = texture(DiffuseSampler, texCoord);
     gl_FragColor = tex;
-    vec3 finalCol = mix(vec3(0.), pow(SkyColor, vec3(2.2)), LightLevel.y/15.);
 
     float sceneDepth = texture(DepthSampler, texCoord).x;
 
-    if (sceneDepth == 1.) {
-        gl_FragColor = vec4(finalCol, 1.);
+    if (sceneDepth == 1) {
         return;
     }
 
@@ -44,8 +41,5 @@ void main() {
     vec3 worldPos = (inverse(ModelViewMat) * vec4(viewPos, 1.)).xyz + CameraPos;
     float dist = sdf(worldPos);
 
-    float distFactor = clamp(dist / max(LightLevel.x, LightLevel.y), 0.1, 1.);
-
-
-    gl_FragColor = vec4(mix(tex.rgb, finalCol, distFactor * smoothstep(0.3, 0.7, dist)), 1.);
+    gl_FragColor /= 1 + 0.1 * smoothstep(0.40, 0.60, dist);
 }

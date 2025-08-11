@@ -6,13 +6,14 @@ uniform sampler2D DepthSampler;
 uniform mat4 InverseTransformMatrix;
 uniform mat4 ModelViewMat;
 uniform vec3 CameraPos;
-uniform vec3 SkyColor;
-uniform vec2 LightLevel;
 
 uniform vec3 PlaneOffset;
 uniform float PlaneSlope;
 
 in vec2 texCoord;
+in vec2 oneTexel;
+
+// Most of this is just a direct copy of fog.fsh, but there isn't any #include and I don't think I can connect the outputs, so it is what it is
 
 // almost the same as in plane
 float sdf(vec3 point) {
@@ -26,14 +27,10 @@ float sdf(vec3 point) {
 }
 
 void main() {
-    vec4 tex = texture(DiffuseSampler, texCoord);
-    gl_FragColor = tex;
-    vec3 finalCol = mix(vec3(0.), pow(SkyColor, vec3(2.2)), LightLevel.y/15.);
-
     float sceneDepth = texture(DepthSampler, texCoord).x;
 
-    if (sceneDepth == 1.) {
-        gl_FragColor = vec4(finalCol, 1.);
+    if (sceneDepth == 1) {
+        gl_FragColor = texture(DiffuseSampler, texCoord);
         return;
     }
 
@@ -44,8 +41,14 @@ void main() {
     vec3 worldPos = (inverse(ModelViewMat) * vec4(viewPos, 1.)).xyz + CameraPos;
     float dist = sdf(worldPos);
 
-    float distFactor = clamp(dist / max(LightLevel.x, LightLevel.y), 0.1, 1.);
+    float radius = step(1.6, dist) + step(3.6, dist);
 
+    vec3 finalCol = vec3(0.);
+    for (float x = -radius; x <= radius; x++) {
+        for (float y = -radius; y <= radius; y++) {
+            finalCol += texture(DiffuseSampler, texCoord + vec2(x, y) * oneTexel).rgb;
+        }
+    }
 
-    gl_FragColor = vec4(mix(tex.rgb, finalCol, distFactor * smoothstep(0.3, 0.7, dist)), 1.);
+    gl_FragColor = vec4(finalCol/pow(2. * radius + 1., 2.), 1.);
 }
