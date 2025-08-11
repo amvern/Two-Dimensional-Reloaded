@@ -1,19 +1,13 @@
 {
   "targets": [
-    "desaturate",
     "fog",
     "blur",
     "vignette"
   ],
   "passes": [
     {
-      "name": "two_dimensional:desaturate",
-      "intarget": "minecraft:main",
-      "outtarget": "desaturate"
-    },
-    {
       "name": "two_dimensional:fog",
-      "intarget": "desaturate",
+      "intarget": "minecraft:main",
       "outtarget": "fog"
     },
     {

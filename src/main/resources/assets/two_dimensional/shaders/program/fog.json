@@ -20,6 +20,7 @@
     { "name": "CameraPos",       "type": "float",     "count": 3,  "values": [ 0.0, 0.0, 0.0 ] },
     { "name": "PlaneOffset",       "type": "float",     "count": 3,  "values": [ 0.0, 0.0, 0.0 ] },
     { "name": "PlaneSlope",       "type": "float",     "count": 1,  "values": [ 0.0 ] },
+    { "name": "PlaneNormal",       "type": "float",     "count": 3,  "values": [ 0.0, 0.0, 0.0 ] },
     { "name": "SkyColor",       "type": "float",     "count": 3,  "values": [ 0.0, 0.0, 0.0 ] },
     { "name": "LightLevel",       "type": "float",     "count": 2,  "values": [ 0.0, 0.0 ] }
   ]
