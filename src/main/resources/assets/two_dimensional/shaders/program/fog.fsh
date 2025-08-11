@@ -42,7 +42,11 @@ void main() {
     vec3 worldPos = (inverse(ModelViewMat) * vec4(viewPos, 1.)).xyz + CameraPos;
     float dist = sdf(worldPos);
 
+    float distFactor = clamp(dist / max(LightLevel.x, LightLevel.y), 0.1, 1.);
+
+    vec3 finalCol = mix(vec3(0.), pow(SkyColor, vec3(2.2)), LightLevel.y/15.);
+
     if (dist >= 0.51) {
-        gl_FragColor = vec4(mix(tex.rgb, pow(SkyColor, vec3(2.2)), clamp(dist / 16., 0.1, 1.)), 1.);
+        gl_FragColor = vec4(mix(tex.rgb, finalCol, distFactor), 1.);
     }
 }
