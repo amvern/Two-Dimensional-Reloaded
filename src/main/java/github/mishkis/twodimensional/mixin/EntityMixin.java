@@ -1,5 +1,7 @@
 package github.mishkis.twodimensional.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.duck_interface.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
@@ -53,6 +55,12 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
 
     @Shadow public abstract float getYaw();
 
+    @Shadow public double prevX;
+
+    @Shadow public double prevY;
+
+    @Shadow public double prevZ;
+
     @Inject(method = "updateVelocity", at = @At("HEAD"), cancellable = true)
     public void updateVelocity(float speed, Vec3d movementInput, CallbackInfo ci) {
         if (twoDimensional$getPlane() != null) {
@@ -85,6 +93,17 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {
             this.blockPos = BlockPos.ofFloored(plane.intersectPoint(new Vec3d(x, y, z)));
+        }
+    }
+
+    @Inject(method = "updatePosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setPosition(DDD)V"))
+    private void clampPrevPos(double x, double y, double z, CallbackInfo ci, @Local (ordinal = 0) double d, @Local (ordinal = 1) double e) {
+        Plane plane = twoDimensional$getPlane();
+        if (plane != null) {
+            Vec3d clampedPos = plane.intersectPoint(new Vec3d(d, y, e));
+            this.prevX = clampedPos.x;
+            this.prevY = clampedPos.y;
+            this.prevZ = clampedPos.z;
         }
     }
 }

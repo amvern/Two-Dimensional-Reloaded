@@ -27,7 +27,7 @@ public class TwoDimensional implements ModInitializer {
     public static final Identifier PLANE_SYNC = new Identifier(MOD_ID, "plane_sync");
     public static final Identifier PLANE_REMOVE = new Identifier(MOD_ID, "plane_remove");
 
-    private Text updatePlane(MinecraftServer minecraftServer, ServerPlayerEntity player, double x, double z, double yaw) {
+    public static Text updatePlane(MinecraftServer minecraftServer, ServerPlayerEntity player, double x, double z, double yaw) {
         final double radYaw = yaw * MathHelper.RADIANS_PER_DEGREE;
 
         PlanePersistentState.setPlayerPlane(player, x, z, radYaw);
