@@ -1,13 +1,19 @@
 package github.mishkis.twodimensional.utils;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.network.encryption.ClientPlayerSession;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Plane {
     public static double CULL_DIST = -0.5;
+    public List<Entity> containedEntities = new ArrayList<Entity>();
 
     private Vec3d offset;
     private double yaw;
@@ -58,20 +64,20 @@ public class Plane {
         this.normal = offset.add(-Math.sin(yaw), 0, Math.cos(yaw));
     }
 
-    // Positive is defined as being counter-clockwise
-    public double sdf(Vec3d point) {
-        Vec3d intersect = intersectPoint(point);
-
-        Vec3d to_point = new Vec3d(point.x - intersect.x, 0, point.z - intersect.z);
-        return to_point.length() * MathHelper.sign(to_point.dotProduct(normal));
-    }
-
     public Vec3d intersectPoint(Vec3d point) {
         // slope(x - offset.x) + offset.z = (-1/slope)(x - point.x) + point.z
         double x = (slope * offset.x - offset.z + point.x / slope + point.z) / (slope + 1 / slope);
         double z = slope * (x - offset.x) + offset.z;
 
         return new Vec3d(x, point.y, z);
+    }
+
+    // Positive is defined as being counter-clockwise
+    public double sdf(Vec3d point) {
+        Vec3d intersect = intersectPoint(point);
+
+        Vec3d to_point = new Vec3d(point.x - intersect.x, 0, point.z - intersect.z);
+        return to_point.length() * MathHelper.sign(to_point.dotProduct(normal));
     }
 
     public static boolean shouldCull(BlockPos blockPos, Plane plane) {

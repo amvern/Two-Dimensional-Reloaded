@@ -1,0 +1,90 @@
+package github.mishkis.twodimensional.mixin;
+
+import github.mishkis.twodimensional.duck_interface.EntityPlaneGetterSetter;
+import github.mishkis.twodimensional.utils.Plane;
+import github.mishkis.twodimensional.utils.PlanePersistentState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(Entity.class)
+public abstract class EntityMixin implements EntityPlaneGetterSetter {
+    @Unique
+    private Plane twoDimensional$plane = null;
+
+    @Override
+    @Nullable
+    public Plane twoDimensional$getPlane() {
+        if ((Object)this instanceof ServerPlayerEntity player) {
+            return PlanePersistentState.getPlayerPlane(player);
+        }
+
+        return twoDimensional$plane;
+    }
+
+    @Override
+    public void twoDimensional$setPlane(Plane plane) {
+        this.twoDimensional$plane = plane;
+    }
+    @Shadow public abstract void setVelocity(Vec3d velocity);
+
+    @Shadow public abstract Vec3d getVelocity();
+
+    @Shadow private static Vec3d movementInputToVelocity(Vec3d movementInput, float speed, float yaw) {return null;}
+
+    @Shadow private Vec3d velocity;
+
+    @Shadow private Vec3d pos;
+
+    @Shadow private BlockPos blockPos;
+
+    @Shadow public abstract Vec3d getPos();
+
+    @Shadow public abstract float getYaw();
+
+    @Inject(method = "updateVelocity", at = @At("HEAD"), cancellable = true)
+    public void updateVelocity(float speed, Vec3d movementInput, CallbackInfo ci) {
+        if (twoDimensional$getPlane() != null) {
+            // convert z movement into movement in direction of yaw
+            movementInput = new Vec3d(movementInput.x + movementInput.z * (this.getYaw() > 180 + twoDimensional$getPlane().getYaw() ? 1 : -1), movementInput.y, 0.);
+            this.setVelocity(this.getVelocity().add(movementInputToVelocity(movementInput, speed, (float) (twoDimensional$getPlane().getYaw() * MathHelper.DEGREES_PER_RADIAN))));
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "setVelocity(Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), cancellable = true)
+    public void clampVelocityToPlane(Vec3d velocity, CallbackInfo ci) {
+        Plane plane = twoDimensional$getPlane();
+        if (plane != null) {
+            this.velocity = plane.intersectPoint(velocity.add(this.getPos())).subtract(this.getPos());
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "setPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;<init>(DDD)V", shift = At.Shift.AFTER))
+    public void clampSetPos(double x, double y, double z, CallbackInfo ci) {
+        Plane plane = twoDimensional$getPlane();
+        if (plane != null) {
+            this.pos = plane.intersectPoint(new Vec3d(x, y, z));
+        }
+    }
+
+    @Inject(method = "setPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;<init>(III)V", shift = At.Shift.AFTER))
+    public void clampBlockPos(double x, double y, double z, CallbackInfo ci) {
+        Plane plane = twoDimensional$getPlane();
+        if (plane != null) {
+            this.blockPos = BlockPos.ofFloored(plane.intersectPoint(new Vec3d(x, y, z)));
+        }
+    }
+}

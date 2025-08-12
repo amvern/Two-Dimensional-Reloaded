@@ -1,6 +1,7 @@
 package github.mishkis.twodimensional;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import github.mishkis.twodimensional.duck_interface.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
 import net.fabricmc.api.ModInitializer;
@@ -15,6 +16,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.logging.Logger;
 
@@ -26,24 +28,46 @@ public class TwoDimensional implements ModInitializer {
     public static final Identifier PLANE_REMOVE = new Identifier(MOD_ID, "plane_remove");
 
     private Text updatePlane(MinecraftServer minecraftServer, ServerPlayerEntity player, double x, double z, double yaw) {
-        yaw *= MathHelper.RADIANS_PER_DEGREE;
+        final double radYaw = yaw * MathHelper.RADIANS_PER_DEGREE;
 
-        PlanePersistentState.setPlayerPlane(player, x, z, yaw);
+        PlanePersistentState.setPlayerPlane(player, x, z, radYaw);
         PacketByteBuf data = PacketByteBufs.create();
         data.writeDouble(x);
         data.writeDouble(z);
-        data.writeDouble(yaw);
+        data.writeDouble(radYaw);
         minecraftServer.execute(() -> {
             ServerPlayNetworking.send(player, PLANE_SYNC, data);
+
+            Plane newPlane = new Plane(new Vec3d(x, 0., z), radYaw);
+            Plane oldPlane = ((EntityPlaneGetterSetter) player).twoDimensional$getPlane();
+            if (oldPlane != null) {
+                newPlane.containedEntities = oldPlane.containedEntities;
+                newPlane.containedEntities.forEach(entity -> {
+                    ((EntityPlaneGetterSetter) entity).twoDimensional$setPlane(newPlane);
+                });
+            }
+
+            ((EntityPlaneGetterSetter) player).twoDimensional$setPlane(newPlane);
+            player.setPos(x, player.getPos().y, z);
         });
 
-        return Text.literal("Active plane set to an offset of [%f, %f], and a yaw of %f.".formatted(x, z, yaw));
+        return Text.literal("Active plane set to an offset of [%f, %f], and a radYaw of %f.".formatted(x, z, radYaw));
     }
 
     private Text removePlane(MinecraftServer minecraftServer, ServerPlayerEntity player) {
         PlanePersistentState.removePlayerPlane(player);
         minecraftServer.execute(() -> {
             ServerPlayNetworking.send(player, PLANE_REMOVE, PacketByteBufs.empty());
+
+            Plane oldPlane = ((EntityPlaneGetterSetter) player).twoDimensional$getPlane();
+            if (oldPlane != null) {
+                oldPlane.containedEntities.forEach(entity -> {
+                    ((EntityPlaneGetterSetter) entity).twoDimensional$setPlane(null);
+                });
+            }
+
+            PlanePersistentState.removePlayerPlane(player);
+            ((EntityPlaneGetterSetter) player).twoDimensional$setPlane(null);
         });
         return Text.literal("Active plane set to none.");
     }
@@ -72,11 +96,11 @@ public class TwoDimensional implements ModInitializer {
                             commandContext.getSource().sendError(Text.literal("This command can only be called from a player!"));
                             return 0;
                         }))
-                        .then(CommandManager.literal("from_yaw").then(CommandManager.argument("yaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
+                        .then(CommandManager.literal("from_yaw").then(CommandManager.argument("radYaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
                             ServerPlayerEntity player = commandContext.getSource().getPlayer();
                             if (player != null) {
                                 commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
-                                        player.getBlockX() + 0.5, player.getBlockZ() + 0.5, DoubleArgumentType.getDouble(commandContext, "yaw")
+                                        player.getBlockX() + 0.5, player.getBlockZ() + 0.5, DoubleArgumentType.getDouble(commandContext, "radYaw")
                                 ), false);
                                 return 1;
                             }
@@ -87,11 +111,11 @@ public class TwoDimensional implements ModInitializer {
                         .then(CommandManager.literal("custom").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(1)).then(
                                 CommandManager.argument("offset_x", DoubleArgumentType.doubleArg()).then(
                                         CommandManager.argument("offset_z", DoubleArgumentType.doubleArg()).then(
-                                                CommandManager.argument("yaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
+                                                CommandManager.argument("radYaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
                                                     ServerPlayerEntity player = commandContext.getSource().getPlayer();
                                                     if (player != null) {
                                                         commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
-                                                                DoubleArgumentType.getDouble(commandContext, "offset_x"), DoubleArgumentType.getDouble(commandContext, "offset_z"), DoubleArgumentType.getDouble(commandContext, "yaw")
+                                                                DoubleArgumentType.getDouble(commandContext, "offset_x"), DoubleArgumentType.getDouble(commandContext, "offset_z"), DoubleArgumentType.getDouble(commandContext, "radYaw")
                                                         ), true);
                                                         return 1;
                                                     }
