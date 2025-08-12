@@ -7,10 +7,12 @@
     "AbstractBlockStateMixin",
     "BlockMixin",
     "CameraMixin",
+    "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "EntityMixin",
     "FluidRendererMixin",
     "GameOptionsMixin",
+    "InputMixin",
     "MouseMixin",
     "TerrainRenderContextMixin",
     "WorldRendererMixin"

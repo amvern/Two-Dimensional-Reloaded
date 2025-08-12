@@ -65,8 +65,9 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
     public void updateVelocity(float speed, Vec3d movementInput, CallbackInfo ci) {
         if (twoDimensional$getPlane() != null) {
             // convert z movement into movement in direction of yaw
-            movementInput = new Vec3d(movementInput.x + movementInput.z * (this.getYaw() > 180 + twoDimensional$getPlane().getYaw() ? 1 : -1), movementInput.y, 0.);
-            this.setVelocity(this.getVelocity().add(movementInputToVelocity(movementInput, speed, (float) (twoDimensional$getPlane().getYaw() * MathHelper.DEGREES_PER_RADIAN))));
+            double planeYaw = twoDimensional$getPlane().getYaw() * MathHelper.DEGREES_PER_RADIAN;
+            movementInput = new Vec3d(movementInput.x + movementInput.z * MathHelper.sign(this.getYaw() - 180 - planeYaw), movementInput.y, 0.);
+            this.setVelocity(this.getVelocity().add(movementInputToVelocity(movementInput, speed, (float) (planeYaw))));
             ci.cancel();
         }
     }
