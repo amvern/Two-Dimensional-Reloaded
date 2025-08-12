@@ -12,6 +12,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.Window;
 import net.minecraft.util.math.Vec3d;
 
 public class TwoDimensionalClient implements ClientModInitializer {
@@ -28,6 +30,8 @@ public class TwoDimensionalClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PLANE_REMOVE, ((minecraftClient, clientPlayNetworkHandler, packetByteBuf, packetSender) -> {
             plane =  null;
             shouldUpdatePlane = true;
+
+            MinecraftClient.getInstance().mouse.unlockCursor();
         }));
 
         ClientTickEvents.START_CLIENT_TICK.register((client -> {
@@ -35,6 +39,8 @@ public class TwoDimensionalClient implements ClientModInitializer {
                 ((EntityPlaneGetterSetter) client.player).twoDimensional$setPlane(plane);
                 client.worldRenderer.reload();
                 shouldUpdatePlane = false;
+
+                MinecraftClient.getInstance().mouse.lockCursor();
             }
         }));
 

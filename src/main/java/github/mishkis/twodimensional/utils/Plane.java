@@ -57,11 +57,14 @@ public class Plane {
 
     private void updateValues() {
         this.slope = Math.tan(yaw);
-        if (this.slope == 0) {
+        if (slope == 0) {
             // prevent division by 0
-            this.slope = 0.00001;
+            this.slope = 0.0000001;
         }
-        this.normal = offset.add(-Math.sin(yaw), 0, Math.cos(yaw));
+
+        this.slope = MathHelper.clamp(slope, -99999, 99999);
+
+        this.normal = new Vec3d(-Math.sin(yaw), 0, Math.cos(yaw));
     }
 
     public Vec3d intersectPoint(Vec3d point) {
@@ -77,7 +80,7 @@ public class Plane {
         Vec3d intersect = intersectPoint(point);
 
         Vec3d to_point = new Vec3d(point.x - intersect.x, 0, point.z - intersect.z);
-        return to_point.length() * MathHelper.sign(to_point.dotProduct(normal));
+        return to_point.length() * MathHelper.sign(to_point.dotProduct(getNormal()));
     }
 
     public static boolean shouldCull(BlockPos blockPos, Plane plane) {
