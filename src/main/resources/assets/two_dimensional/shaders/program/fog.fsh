@@ -15,6 +15,8 @@ uniform vec3 PlaneNormal;
 
 in vec2 texCoord;
 
+out vec4 fragColor;
+
 // almost the same as in plane
 float sdf(vec3 point) {
     float x = (PlaneSlope * PlaneOffset.x - PlaneOffset.z + point.x / PlaneSlope + point.z) / (PlaneSlope + 1. / PlaneSlope);
@@ -32,7 +34,7 @@ void main() {
     float sceneDepth = texture(DepthSampler, texCoord).x;
 
     if (sceneDepth == 1.) {
-        gl_FragColor = vec4(finalCol, 1.);
+        fragColor = vec4(finalCol, 1.);
         return;
     }
 
@@ -47,5 +49,5 @@ void main() {
     tex /= 1 + 0.1 * smoothstep(0.40, 0.60, dist);
 
     float distFactor = clamp(dist / max(LightLevel.x, LightLevel.y), 0.1, 1.);
-    gl_FragColor = vec4(mix(tex.rgb, finalCol, distFactor * smoothstep(0.3, 0.7, dist)), 1.);
+    fragColor = vec4(mix(tex.rgb, finalCol, distFactor * smoothstep(0.3, 0.7, dist)), 1.);
 }

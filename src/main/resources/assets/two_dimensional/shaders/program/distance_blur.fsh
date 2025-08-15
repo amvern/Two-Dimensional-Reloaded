@@ -13,6 +13,8 @@ uniform float PlaneSlope;
 in vec2 texCoord;
 in vec2 oneTexel;
 
+out vec4 fragColor;
+
 // Most of this is just a direct copy of fog.fsh, but there isn't any #include and I don't think I can connect the outputs, so it is what it is
 
 // almost the same as in plane
@@ -30,7 +32,7 @@ void main() {
     float sceneDepth = texture(DepthSampler, texCoord).x;
 
     if (sceneDepth == 1) {
-        gl_FragColor = texture(DiffuseSampler, texCoord);
+        fragColor = texture(DiffuseSampler, texCoord);
         return;
     }
 
@@ -50,5 +52,5 @@ void main() {
         }
     }
 
-    gl_FragColor = vec4(finalCol/pow(2. * radius + 1., 2.), 1.);
+    fragColor = vec4(finalCol/pow(2. * radius + 1., 2.), 1.);
 }
