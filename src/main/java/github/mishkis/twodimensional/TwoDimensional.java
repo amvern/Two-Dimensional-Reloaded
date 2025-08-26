@@ -51,7 +51,7 @@ public class TwoDimensional implements ModInitializer {
             player.setPos(x, player.getPos().y, z);
         });
 
-        return Text.literal("Active plane set to an offset of [%f, %f], and a radYaw of %f.".formatted(x, z, radYaw));
+        return Text.literal("Active plane of %s set to an offset of [%f, %f], and a yaw of %f.".formatted(player.getName().getString(), x, z, yaw));
     }
 
     private Text removePlane(MinecraftServer minecraftServer, ServerPlayerEntity player) {
@@ -96,11 +96,11 @@ public class TwoDimensional implements ModInitializer {
                             commandContext.getSource().sendError(Text.literal("This command can only be called from a player!"));
                             return 0;
                         }))
-                        .then(CommandManager.literal("from_yaw").then(CommandManager.argument("radYaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
+                        .then(CommandManager.literal("from_yaw").then(CommandManager.argument("yaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
                             ServerPlayerEntity player = commandContext.getSource().getPlayer();
                             if (player != null) {
                                 commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
-                                        player.getBlockX() + 0.5, player.getBlockZ() + 0.5, DoubleArgumentType.getDouble(commandContext, "radYaw")
+                                        player.getBlockX() + 0.5, player.getBlockZ() + 0.5, DoubleArgumentType.getDouble(commandContext, "yaw")
                                 ), false);
                                 return 1;
                             }
@@ -111,11 +111,11 @@ public class TwoDimensional implements ModInitializer {
                         .then(CommandManager.literal("custom").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(1)).then(
                                 CommandManager.argument("offset_x", DoubleArgumentType.doubleArg()).then(
                                         CommandManager.argument("offset_z", DoubleArgumentType.doubleArg()).then(
-                                                CommandManager.argument("radYaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
+                                                CommandManager.argument("yaw", DoubleArgumentType.doubleArg()).executes(commandContext -> {
                                                     ServerPlayerEntity player = commandContext.getSource().getPlayer();
                                                     if (player != null) {
                                                         commandContext.getSource().sendFeedback(() -> updatePlane(commandContext.getSource().getServer(), player,
-                                                                DoubleArgumentType.getDouble(commandContext, "offset_x"), DoubleArgumentType.getDouble(commandContext, "offset_z"), DoubleArgumentType.getDouble(commandContext, "radYaw")
+                                                                DoubleArgumentType.getDouble(commandContext, "offset_x"), DoubleArgumentType.getDouble(commandContext, "offset_z"), DoubleArgumentType.getDouble(commandContext, "yaw")
                                                         ), true);
                                                         return 1;
                                                     }
