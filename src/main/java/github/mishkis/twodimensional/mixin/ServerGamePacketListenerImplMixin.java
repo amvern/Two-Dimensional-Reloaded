@@ -22,25 +22,24 @@ public class ServerGamePacketListenerImplMixin {
     @Unique
     Vec3 TwoDimensional$intersectPoint;
 
-    // this is kinda jank
-    //TODO: convert to mojmaps
-//    @Inject(method = "requestTeleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"))
-//    private void clampInput(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> flags, CallbackInfo ci) {
-//        Plane plane = ((EntityPlaneGetterSetter) this.player).twoDimensional$getPlane();
-//        if (plane != null) {
-//            TwoDimensional$intersectPoint = plane.intersectPoint(new Vec3(x, y, z));
-//        } else {
-//            TwoDimensional$intersectPoint = new Vec3(x, y, z);
-//        }
-//    }
-//
-//    @ModifyVariable(method = "requestTeleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-//    private double clampX(double x) {
-//        return TwoDimensional$intersectPoint.x;
-//    }
-//
-//    @ModifyVariable(method = "requestTeleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
-//    private double clampZ(double Z) {
-//        return TwoDimensional$intersectPoint.z;
-//    }
+//     this is kinda jank
+ @Inject(method = "teleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"))
+    private void clampInput(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> flags, CallbackInfo ci) {
+        Plane plane = ((EntityPlaneGetterSetter) this.player).twoDimensional$getPlane();
+        if (plane != null) {
+            TwoDimensional$intersectPoint = plane.intersectPoint(new Vec3(x, y, z));
+        } else {
+            TwoDimensional$intersectPoint = new Vec3(x, y, z);
+        }
+    }
+
+    @ModifyVariable(method = "teleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private double clampX(double x) {
+        return TwoDimensional$intersectPoint.x;
+    }
+
+    @ModifyVariable(method = "teleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
+    private double clampZ(double Z) {
+        return TwoDimensional$intersectPoint.z;
+    }
 }
