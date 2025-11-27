@@ -3,6 +3,7 @@ package github.mishkis.twodimensional.client;
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.client.rendering.TwoDimensionalCrosshairRenderer;
+import github.mishkis.twodimensional.client.rendering.TwoDimensionalShaders;
 import github.mishkis.twodimensional.utils.Plane;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -11,6 +12,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
+import org.ladysnake.satin.api.event.PostWorldRenderCallback;
+import org.ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import org.lwjgl.glfw.GLFW;
 
 
@@ -51,9 +54,8 @@ public class TwoDimensionalClient implements ClientModInitializer {
             }
         }));
 
-        //TODO: re-enable shader registry
-        //PostWorldRenderCallback.EVENT.register(TwoDimensionalShaders.INSTANCE);
-        //ShaderEffectRenderCallback.EVENT.register(TwoDimensionalShaders.INSTANCE);
+        PostWorldRenderCallback.EVENT.register(TwoDimensionalShaders.INSTANCE);
+        ShaderEffectRenderCallback.EVENT.register(TwoDimensionalShaders.INSTANCE);
         TwoDimensionalCrosshairRenderer.intialize();
     }
 }
