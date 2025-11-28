@@ -24,6 +24,11 @@ public class TwoDimensionalClient implements ClientModInitializer {
             GLFW.GLFW_KEY_B,
             "keyGroup.twodimensional"
     ));
+    public static KeyMapping turnedAround180 = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.twodimensional.turnedAround180",
+            GLFW.GLFW_KEY_V,
+            "keyGroup.twodimensional"
+    ));
 
     private boolean shouldUpdatePlane = true;
 
