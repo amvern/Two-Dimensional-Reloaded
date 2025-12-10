@@ -24,7 +24,7 @@ public class PlanePersistentState extends SavedData {
         players.forEach(((uuid, plane) -> {
             CompoundTag playerNbt = new CompoundTag();
 
-            playerNbt.putDouble("planeZ", plane.getOffset().z);
+            playerNbt.putDouble("planeZ", plane.getZ());
 
             playersNbt.put(uuid.toString(), playerNbt);
         }));

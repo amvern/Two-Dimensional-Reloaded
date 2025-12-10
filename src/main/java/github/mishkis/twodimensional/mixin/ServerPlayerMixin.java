@@ -32,8 +32,7 @@ public abstract class ServerPlayerMixin extends Player {
         ((EntityPlaneGetterSetter) this).twoDimensional$setPlane(plane);
 
         if (plane != null) {
-            // sync to client
-            TwoDimensional.updatePlane(this.getServer(), (ServerPlayer) (Player) this, plane.getOffset().x, plane.getOffset().z, plane.getYaw());
+            TwoDimensional.setPlayerPlane(this.getServer(), (ServerPlayer) (Player) this);
         }
     }
 

@@ -41,7 +41,7 @@ public abstract class CameraMixin {
         if (plane != null) {
             this.detached = true;
 
-            this.setRotation((float) (plane.getYaw() * Mth.RAD_TO_DEG), 0);
+            this.setRotation(0f, 0f);
 
             Vec3 pos = new Vec3(Mth.lerp(tickDelta, focusedEntity.xo, focusedEntity.getX()), Mth.lerp(tickDelta, focusedEntity.yo, focusedEntity.getY()) + focusedEntity.getEyeHeight(), Mth.lerp(tickDelta, focusedEntity.zo, focusedEntity.getZ()));
             this.setPosition(pos.x, pos.y, pos.z);
