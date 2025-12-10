@@ -88,6 +88,8 @@ java {
 }
 
 jar {
+    archiveVersion.set("${project.minecraft_version}-${project.version}")
+
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
     }
