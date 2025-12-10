@@ -22,7 +22,7 @@ public class LevelRendererMixin {
 
     @ModifyExpressionValue(
             method = "renderLevel",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk;getRenderableBlockEntities()Ljava/util/List;")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/SectionRenderDispatcher$CompiledSection;getRenderableBlockEntities()Ljava/util/List;")
     )
     private List<BlockEntity> cullBlockEntities(List<BlockEntity> original) {
         Plane plane = TwoDimensionalClient.plane;

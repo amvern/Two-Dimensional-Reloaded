@@ -17,7 +17,7 @@ public class TwoDimensionalCrosshairRenderer {
 
                 double mouseX = mouse.xpos() * guiGraphics.guiWidth() / window.getScreenWidth();
                 double mouseY = mouse.ypos() * guiGraphics.guiHeight() / window.getScreenHeight();
-                guiGraphics.blit(new ResourceLocation("textures/gui/icons.png"), (int)(mouseX) - 7, (int)(mouseY) - 7, 0, 0, 15, 15, 265, 265);
+                guiGraphics.blit(ResourceLocation.withDefaultNamespace("textures/gui/sprites/hud/crosshair.png"), (int)(mouseX) - 7, (int)(mouseY) - 7, 0, 0, 15, 15, 15, 15);
             }
         }));
     }

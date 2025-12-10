@@ -6,12 +6,15 @@ import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,19 +26,48 @@ public class TwoDimensional implements ModInitializer {
     public static final String MOD_ID = "two_dimensional";
     public static final Logger LOGGER = Logger.getLogger(MOD_ID);
 
-    public static final ResourceLocation PLANE_SYNC = new ResourceLocation(MOD_ID, "plane_sync");
-    public static final ResourceLocation PLANE_REMOVE = new ResourceLocation(MOD_ID, "plane_remove");
+    public static final ResourceLocation PLANE_SYNC = ResourceLocation.fromNamespaceAndPath(MOD_ID, "plane_sync");
+    public static final ResourceLocation PLANE_REMOVE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "plane_remove");
+
+    public record PlaneSyncPayload(double x, double z, double radYaw) implements CustomPacketPayload {
+        public static final Type<PlaneSyncPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TwoDimensional.MOD_ID, "plane_sync"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, PlaneSyncPayload> CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.DOUBLE, PlaneSyncPayload::x,
+                        ByteBufCodecs.DOUBLE, PlaneSyncPayload::z,
+                        ByteBufCodecs.DOUBLE, PlaneSyncPayload::radYaw,
+                        PlaneSyncPayload::new
+                );
+
+        @Override
+        public Type<? extends  CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record PlaneRemovePayload(boolean remove) implements CustomPacketPayload {
+        public static final Type<PlaneRemovePayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TwoDimensional.MOD_ID, "plane_remove"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, PlaneRemovePayload> CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.BOOL, PlaneRemovePayload::remove,
+                        PlaneRemovePayload::new
+                );
+
+        @Override
+        public Type<? extends  CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
 
     public static Component updatePlane(MinecraftServer minecraftServer, ServerPlayer player, double x, double z, double yaw) {
         final double radYaw = yaw * Mth.DEG_TO_RAD;
 
         PlanePersistentState.setPlayerPlane(player, x, z, radYaw);
-        FriendlyByteBuf data = PacketByteBufs.create();
-        data.writeDouble(x);
-        data.writeDouble(z);
-        data.writeDouble(radYaw);
+
         minecraftServer.execute(() -> {
-            ServerPlayNetworking.send(player, PLANE_SYNC, data);
+            ServerPlayNetworking.send(player, new PlaneSyncPayload(x, z, radYaw));
 
             Plane newPlane = new Plane(new Vec3(x, 0., z), radYaw);
             Plane oldPlane = ((EntityPlaneGetterSetter) player).twoDimensional$getPlane();
@@ -56,7 +88,7 @@ public class TwoDimensional implements ModInitializer {
     private Component removePlane(MinecraftServer minecraftServer, ServerPlayer player) {
         PlanePersistentState.removePlayerPlane(player);
         minecraftServer.execute(() -> {
-            ServerPlayNetworking.send(player, PLANE_REMOVE, PacketByteBufs.empty());
+            ServerPlayNetworking.send(player, new PlaneRemovePayload(true));
 
             Plane oldPlane = ((EntityPlaneGetterSetter) player).twoDimensional$getPlane();
             if (oldPlane != null) {
@@ -73,6 +105,16 @@ public class TwoDimensional implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        PayloadTypeRegistry.playS2C().register(
+                PlaneSyncPayload.TYPE,
+                PlaneSyncPayload.CODEC
+        );
+
+        PayloadTypeRegistry.playS2C().register(
+                PlaneRemovePayload.TYPE,
+                PlaneRemovePayload.CODEC
+        );
+
         ServerPlayConnectionEvents.JOIN.register(((serverPlayNetworkHandler, packetSender, minecraftServer) -> {
             Plane plane = PlanePersistentState.getPlayerPlane(serverPlayNetworkHandler.getPlayer());
             if (plane != null) {

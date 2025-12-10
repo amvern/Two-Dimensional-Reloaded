@@ -5,14 +5,15 @@ import github.mishkis.twodimensional.client.rendering.TwoDimensionalCrosshairRen
 import github.mishkis.twodimensional.client.rendering.TwoDimensionalShaders;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.utils.Plane;
-import ladysnake.satin.api.event.PostWorldRenderCallback;
-import ladysnake.satin.api.event.ShaderEffectRenderCallback;
+import org.ladysnake.satin.api.event.PostWorldRenderCallback;
+import org.ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.block.entity.vault.VaultBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,13 +29,14 @@ public class TwoDimensionalClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PLANE_SYNC, ((minecraftClient, clientPlayNetworkHandler, packetByteBuf, packetSender) -> {
-            plane = new Plane(new Vec3(packetByteBuf.readDouble(), 0, packetByteBuf.readDouble()), packetByteBuf.readDouble());
+        ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PlaneSyncPayload.TYPE, (payload, ctx) -> {
+            plane = new Plane(new Vec3(payload.x(), 0, payload.z()), payload.radYaw());
             shouldUpdatePlane = true;
 
             Minecraft.getInstance().mouseHandler.releaseMouse();
-        }));
-        ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PLANE_REMOVE, ((minecraftClient, clientPlayNetworkHandler, packetByteBuf, packetSender) -> {
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PlaneRemovePayload.TYPE, ((payload, ctx) -> {
             plane =  null;
             shouldUpdatePlane = true;
 

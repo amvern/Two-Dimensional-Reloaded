@@ -31,7 +31,7 @@ public abstract class CameraMixin {
 
     @Shadow protected abstract void setRotation(float yaw, float pitch);
 
-    @Shadow protected abstract void move(double x, double y, double z);
+    @Shadow protected abstract void move(float x, float y, float z);
 
     @Shadow private float eyeHeight;
 
@@ -54,7 +54,7 @@ public abstract class CameraMixin {
             twoDimensional$xMouseOffset = Mth.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
             twoDimensional$yMouseOffset = Mth.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
 
-            this.move(-8, twoDimensional$yMouseOffset, twoDimensional$xMouseOffset);
+            this.move(-8, (float) twoDimensional$yMouseOffset, (float) twoDimensional$xMouseOffset);
 
             ci.cancel();
         }

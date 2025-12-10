@@ -4,8 +4,10 @@ import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.serialization.Codec;
 import github.mishkis.twodimensional.TwoDimensional;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -20,7 +22,7 @@ public class PlanePersistentState extends SavedData {
     private HashMap<UUID, Plane> players = new HashMap<>();
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
         CompoundTag playersNbt = new CompoundTag();
         players.forEach(((uuid, plane) -> {
             CompoundTag playerNbt = new CompoundTag();
@@ -38,19 +40,14 @@ public class PlanePersistentState extends SavedData {
         return nbt;
     }
 
-    public static PlanePersistentState createFromNbt(CompoundTag nbt) {
+    public static PlanePersistentState createFromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
         PlanePersistentState state = new PlanePersistentState();
-
         CompoundTag playersNbt = nbt.getCompound("players");
         playersNbt.getAllKeys().forEach(key -> {
             Plane plane = new Plane(
-                    new Vec3(playersNbt.getCompound(key).getDouble("offset.x"), 0, playersNbt.getCompound(key).getDouble("offset.z")),
-                    playersNbt.getCompound(key).getDouble("yaw")
-            );
-
+                    new Vec3(playersNbt.getCompound(key).getDouble("offset.x"), 0, playersNbt.getCompound(key).getDouble("offset.z")), playersNbt.getCompound(key).getDouble("yaw"));
             state.players.put(UUID.fromString(key), plane);
         });
-
         return state;
     }
 
@@ -60,11 +57,30 @@ public class PlanePersistentState extends SavedData {
         return state;
     }
 
-    public static PlanePersistentState getServerState(MinecraftServer server) {
+        public static PlanePersistentState getServerState(MinecraftServer server) {
         DimensionDataStorage persistentStateManager = server.getLevel(Level.OVERWORLD).getDataStorage();
 
-        PlanePersistentState state = persistentStateManager.computeIfAbsent(PlanePersistentState::createFromNbt, PlanePersistentState::createNew, TwoDimensional.MOD_ID);
+        PlanePersistentState state = persistentStateManager.computeIfAbsent(
+                new SavedData.Factory<>(
+                        PlanePersistentState::createNew,
+                        PlanePersistentState::createFromNbt,
+                        DataFixTypes.SAVED_DATA_FORCED_CHUNKS
+                ),
+                TwoDimensional.MOD_ID
+        );
 
+      // PlanePersistentState state = persistentStateManager.computeIfAbsent(PlanePersistentState::createFromNbt, PlanePersistentState::createNew, TwoDimensional.MOD_ID);
+
+        //public <T extends SavedData> T computeIfAbsent(SavedData.Factory<T> factory, String string) {
+        //		T savedData = this.get(factory, string);
+        //		if (savedData != null) {
+        //			return savedData;
+        //		} else {
+        //			T savedData2 = (T)factory.constructor().get();
+        //			this.set(string, savedData2);
+        //			return savedData2;
+        //		}
+        //	}
         state.setDirty();
 
         return state;

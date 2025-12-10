@@ -38,7 +38,7 @@ public abstract class ServerPlayerMixin extends Player {
     }
 
     @ModifyArgs(
-            method = "fudgeSpawnLocation",
+            method = "adjustSpawnLocation",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/level/PlayerRespawnLogic;getOverworldRespawnPos(Lnet/minecraft/server/level/ServerLevel;II)Lnet/minecraft/core/BlockPos;"

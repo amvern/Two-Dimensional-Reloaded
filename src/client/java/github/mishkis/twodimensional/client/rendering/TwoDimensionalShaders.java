@@ -4,13 +4,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.client.TwoDimensionalClient;
 import github.mishkis.twodimensional.utils.Plane;
-import ladysnake.satin.api.event.PostWorldRenderCallback;
-import ladysnake.satin.api.event.ShaderEffectRenderCallback;
-import ladysnake.satin.api.experimental.ReadableDepthFramebuffer;
-import ladysnake.satin.api.managed.ManagedShaderEffect;
-import ladysnake.satin.api.managed.ShaderEffectManager;
-import ladysnake.satin.api.managed.uniform.*;
-import ladysnake.satin.api.util.GlMatrices;
+import org.ladysnake.satin.api.event.PostWorldRenderCallback;
+import org.ladysnake.satin.api.event.ShaderEffectRenderCallback;
+import org.ladysnake.satin.api.experimental.ReadableDepthFramebuffer;
+import org.ladysnake.satin.api.managed.ManagedShaderEffect;
+import org.ladysnake.satin.api.managed.ShaderEffectManager;
+import org.ladysnake.satin.api.managed.uniform.*;
+import org.ladysnake.satin.api.util.GlMatrices;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +23,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
 public class TwoDimensionalShaders implements PostWorldRenderCallback, ShaderEffectRenderCallback {
-    public static final ResourceLocation PLANE_SHADERS_ID = new ResourceLocation(TwoDimensional.MOD_ID, "shaders/post/plane_shaders.json");
+    public static final ResourceLocation PLANE_SHADERS_ID = ResourceLocation.fromNamespaceAndPath(TwoDimensional.MOD_ID, "shaders/post/plane_shaders.json");
     public static final TwoDimensionalShaders INSTANCE = new TwoDimensionalShaders();
 
     private final Minecraft minecraftClient = Minecraft.getInstance();
@@ -45,7 +45,7 @@ public class TwoDimensionalShaders implements PostWorldRenderCallback, ShaderEff
     private Vector2f lightLevel = new Vector2f(15f);
 
     @Override
-    public void onWorldRendered(Camera camera, float tickDelta, long nanoTime) {
+    public void onWorldRendered(Camera camera, float v) {
         Plane plane = TwoDimensionalClient.plane;
         if (plane != null) {
             uniformInverseTransformMatrix.set(GlMatrices.getInverseTransformMatrix(projectionMatrix));
