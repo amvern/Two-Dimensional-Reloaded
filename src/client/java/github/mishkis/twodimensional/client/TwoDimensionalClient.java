@@ -10,13 +10,12 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 
 public class TwoDimensionalClient implements ClientModInitializer {
     public static Plane plane = null;
-    public static KeyMapping turnedAround = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.twodimensional.turn_around",
+    public static KeyMapping faceAway = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.twodimensional.face_away",
             GLFW.GLFW_KEY_B,
             "keyGroup.twodimensional"
     ));
@@ -25,19 +24,17 @@ public class TwoDimensionalClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PlaneSyncPayload.TYPE, (payload, ctx) -> {
-            plane = new Plane(new Vec3(payload.x(), 0, payload.z()), payload.radYaw());
-            shouldUpdatePlane = true;
 
-            Minecraft.getInstance().mouseHandler.releaseMouse();
-        });
-
-        ClientPlayNetworking.registerGlobalReceiver(TwoDimensional.PlaneRemovePayload.TYPE, ((payload, ctx) -> {
-            plane =  null;
-            shouldUpdatePlane = true;
-
-            Minecraft.getInstance().mouseHandler.releaseMouse();
-        }));
+        ClientPlayNetworking.registerGlobalReceiver(
+                TwoDimensional.PlaneSyncPayload.TYPE,
+                (payload, ctx) -> {
+                    Minecraft.getInstance().execute(() -> {
+                        TwoDimensionalClient.plane = new Plane(payload.z());
+                    });
+                    shouldUpdatePlane = true;
+                    Minecraft.getInstance().mouseHandler.releaseMouse();
+                }
+        );
 
         ClientTickEvents.START_CLIENT_TICK.register((client -> {
             if (shouldUpdatePlane && client.player != null) {
@@ -45,10 +42,10 @@ public class TwoDimensionalClient implements ClientModInitializer {
                 client.levelRenderer.allChanged();
                 shouldUpdatePlane = false;
 
-                Minecraft.getInstance().mouseHandler.grabMouse();
+                Minecraft.getInstance().mouseHandler.grabMouse();;
             }
         }));
 
-        TwoDimensionalCrosshairRenderer.intialize();
+        TwoDimensionalCrosshairRenderer.initialize();
     }
 }
