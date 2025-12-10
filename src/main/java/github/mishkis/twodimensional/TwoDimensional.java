@@ -26,9 +26,6 @@ public class TwoDimensional implements ModInitializer {
     public static final String MOD_ID = "two_dimensional";
     public static final Logger LOGGER = Logger.getLogger(MOD_ID);
 
-    public static final ResourceLocation PLANE_SYNC = ResourceLocation.fromNamespaceAndPath(MOD_ID, "plane_sync");
-    public static final ResourceLocation PLANE_REMOVE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "plane_remove");
-
     public record PlaneSyncPayload(double x, double z, double radYaw) implements CustomPacketPayload {
         public static final Type<PlaneSyncPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TwoDimensional.MOD_ID, "plane_sync"));
 
