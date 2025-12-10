@@ -1,27 +1,24 @@
 package github.mishkis.twodimensional.utils;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.network.encryption.ClientPlayerSession;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class Plane {
     public static double CULL_DIST = -0.5;
     public List<Entity> containedEntities = new ArrayList<Entity>();
 
-    private Vec3d offset;
+    private Vec3 offset;
     private double yaw;
 
-    private Vec3d normal;
+    private Vec3 normal;
     private double slope;
 
-    public Plane(Vec3d offset, double yaw) {
+    public Plane(Vec3 offset, double yaw) {
         this.offset = offset;
         this.yaw = yaw;
 
@@ -29,7 +26,7 @@ public class Plane {
         updateValues();
     }
 
-    public void setOffset(Vec3d offset) {
+    public void setOffset(Vec3 offset) {
         this.offset = offset;
         updateValues();
     }
@@ -39,7 +36,7 @@ public class Plane {
         updateValues();
     }
 
-    public Vec3d getOffset() {
+    public Vec3 getOffset() {
         return offset;
     }
 
@@ -47,7 +44,7 @@ public class Plane {
         return yaw;
     }
 
-    public Vec3d getNormal() {
+    public Vec3 getNormal() {
         return normal;
     }
 
@@ -62,30 +59,30 @@ public class Plane {
             this.slope = 0.0000001;
         }
 
-        this.slope = MathHelper.clamp(slope, -99, 99);
+        this.slope = Mth.clamp(slope, -99, 99);
 
-        this.normal = new Vec3d(-Math.sin(yaw), 0, Math.cos(yaw));
+        this.normal = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
     }
 
-    public Vec3d intersectPoint(Vec3d point) {
+    public Vec3 intersectPoint(Vec3 point) {
         // slope(x - offset.x) + offset.z = (-1/slope)(x - point.x) + point.z
         double x = (slope * offset.x - offset.z + point.x / slope + point.z) / (slope + 1 / slope);
         double z = slope * (x - offset.x) + offset.z;
 
-        return new Vec3d(x, point.y, z);
+        return new Vec3(x, point.y, z);
     }
 
     // Positive is defined as being counter-clockwise
-    public double sdf(Vec3d point) {
-        Vec3d intersect = intersectPoint(point);
+    public double sdf(Vec3 point) {
+        Vec3 intersect = intersectPoint(point);
 
-        Vec3d to_point = new Vec3d(point.x - intersect.x, 0, point.z - intersect.z);
-        return to_point.length() * MathHelper.sign(to_point.dotProduct(getNormal()));
+        Vec3 to_point = new Vec3(point.x - intersect.x, 0, point.z - intersect.z);
+        return to_point.length() * Mth.sign(to_point.dot(getNormal()));
     }
 
     public static boolean shouldCull(BlockPos blockPos, Plane plane) {
         if (plane != null) {
-            double dist = plane.sdf(blockPos.toCenterPos());
+            double dist = plane.sdf(blockPos.getCenter());
             return dist <= Plane.CULL_DIST || dist > 32;
         }
         return false;

@@ -11,28 +11,27 @@ import ladysnake.satin.api.managed.ManagedShaderEffect;
 import ladysnake.satin.api.managed.ShaderEffectManager;
 import ladysnake.satin.api.managed.uniform.*;
 import ladysnake.satin.api.util.GlMatrices;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
 public class TwoDimensionalShaders implements PostWorldRenderCallback, ShaderEffectRenderCallback {
-    public static final Identifier PLANE_SHADERS_ID = new Identifier(TwoDimensional.MOD_ID, "shaders/post/plane_shaders.json");
+    public static final ResourceLocation PLANE_SHADERS_ID = new ResourceLocation(TwoDimensional.MOD_ID, "shaders/post/plane_shaders.json");
     public static final TwoDimensionalShaders INSTANCE = new TwoDimensionalShaders();
 
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final Minecraft minecraftClient = Minecraft.getInstance();
 
     private final Matrix4f projectionMatrix = new Matrix4f();
 
     final ManagedShaderEffect PLANE_SHADERS = ShaderEffectManager.getInstance().manage(PLANE_SHADERS_ID, shader -> {
-        shader.setSamplerUniform("DepthSampler", ((ReadableDepthFramebuffer)minecraftClient.getFramebuffer()).getStillDepthMap());
+        shader.setSamplerUniform("DepthSampler", ((ReadableDepthFramebuffer)minecraftClient.getMainRenderTarget()).getStillDepthMap());
     });
     private final UniformMat4 uniformInverseTransformMatrix = PLANE_SHADERS.findUniformMat4("InverseTransformMatrix");
     private final Uniform3f uniformCameraPos = PLANE_SHADERS.findUniform3f("CameraPos");
@@ -51,7 +50,7 @@ public class TwoDimensionalShaders implements PostWorldRenderCallback, ShaderEff
         if (plane != null) {
             uniformInverseTransformMatrix.set(GlMatrices.getInverseTransformMatrix(projectionMatrix));
 
-            uniformCameraPos.set(camera.getPos().toVector3f());
+            uniformCameraPos.set(camera.getPosition().toVector3f());
 
             uniformPlaneOffset.set(plane.getOffset().toVector3f());
             uniformPlaneSlope.set((float) plane.getSlope());
@@ -60,19 +59,19 @@ public class TwoDimensionalShaders implements PostWorldRenderCallback, ShaderEff
             float[] fogColor = RenderSystem.getShaderFogColor();
             uniformSkyColor.set(fogColor[0], fogColor[1], fogColor[2]);
 
-            World world = MinecraftClient.getInstance().world;
-            PlayerEntity player = MinecraftClient.getInstance().player;
-            Vector2f targetLightLevel = new Vector2f(world.getLightLevel(LightType.BLOCK, player.getBlockPos()), world.getLightLevel(LightType.SKY, player.getBlockPos()));
-            player.getHandItems().forEach(itemStack -> {
+            Level world = Minecraft.getInstance().level;
+            Player player = Minecraft.getInstance().player;
+            Vector2f targetLightLevel = new Vector2f(world.getBrightness(LightLayer.BLOCK, player.blockPosition()), world.getBrightness(LightLayer.SKY, player.blockPosition()));
+            player.getHandSlots().forEach(itemStack -> {
                 if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    targetLightLevel.x = Math.max(targetLightLevel.x, MathHelper.clamp(blockItem.getBlock().getDefaultState().getLuminance(), 0f, 10f));
+                    targetLightLevel.x = Math.max(targetLightLevel.x, Mth.clamp(blockItem.getBlock().defaultBlockState().getLightEmission(), 0f, 10f));
                 }
             });
 
             lightLevel = lightLevel.lerp(targetLightLevel, 0.2f);
             uniformLightLevel.set(lightLevel);
 
-            uniformPlayerPos.set(player.getPos().toVector3f());
+            uniformPlayerPos.set(player.position().toVector3f());
         }
     }
 

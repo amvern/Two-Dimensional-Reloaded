@@ -4,28 +4,26 @@ import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.serialization.Codec;
 import github.mishkis.twodimensional.TwoDimensional;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateManager;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PlanePersistentState extends PersistentState {
+public class PlanePersistentState extends SavedData {
     private HashMap<UUID, Plane> players = new HashMap<>();
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        NbtCompound playersNbt = new NbtCompound();
+    public CompoundTag save(CompoundTag nbt) {
+        CompoundTag playersNbt = new CompoundTag();
         players.forEach(((uuid, plane) -> {
-            NbtCompound playerNbt = new NbtCompound();
+            CompoundTag playerNbt = new CompoundTag();
 
             // Really we don't need the y component of the offset for anything whatsoever
             playerNbt.putDouble("offset.x", plane.getOffset().x);
@@ -40,13 +38,13 @@ public class PlanePersistentState extends PersistentState {
         return nbt;
     }
 
-    public static PlanePersistentState createFromNbt(NbtCompound nbt) {
+    public static PlanePersistentState createFromNbt(CompoundTag nbt) {
         PlanePersistentState state = new PlanePersistentState();
 
-        NbtCompound playersNbt = nbt.getCompound("players");
-        playersNbt.getKeys().forEach(key -> {
+        CompoundTag playersNbt = nbt.getCompound("players");
+        playersNbt.getAllKeys().forEach(key -> {
             Plane plane = new Plane(
-                    new Vec3d(playersNbt.getCompound(key).getDouble("offset.x"), 0, playersNbt.getCompound(key).getDouble("offset.z")),
+                    new Vec3(playersNbt.getCompound(key).getDouble("offset.x"), 0, playersNbt.getCompound(key).getDouble("offset.z")),
                     playersNbt.getCompound(key).getDouble("yaw")
             );
 
@@ -63,31 +61,31 @@ public class PlanePersistentState extends PersistentState {
     }
 
     public static PlanePersistentState getServerState(MinecraftServer server) {
-        PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
+        DimensionDataStorage persistentStateManager = server.getLevel(Level.OVERWORLD).getDataStorage();
 
-        PlanePersistentState state = persistentStateManager.getOrCreate(PlanePersistentState::createFromNbt, PlanePersistentState::createNew, TwoDimensional.MOD_ID);
+        PlanePersistentState state = persistentStateManager.computeIfAbsent(PlanePersistentState::createFromNbt, PlanePersistentState::createNew, TwoDimensional.MOD_ID);
 
-        state.markDirty();
+        state.setDirty();
 
         return state;
     }
 
     @Nullable
-    public static Plane getPlayerPlane(PlayerEntity player) {
-        PlanePersistentState serverState = getServerState(player.getWorld().getServer());
+    public static Plane getPlayerPlane(Player player) {
+        PlanePersistentState serverState = getServerState(player.level().getServer());
 
-        return serverState.players.get(player.getUuid());
+        return serverState.players.get(player.getUUID());
     }
 
-    public static void setPlayerPlane(PlayerEntity player, double x, double z, double yaw) {
-        PlanePersistentState serverState = getServerState(player.getWorld().getServer());
+    public static void setPlayerPlane(Player player, double x, double z, double yaw) {
+        PlanePersistentState serverState = getServerState(player.level().getServer());
 
-        serverState.players.put(player.getUuid(), new Plane(new Vec3d(x, 0, z), yaw));
+        serverState.players.put(player.getUUID(), new Plane(new Vec3(x, 0, z), yaw));
     }
 
-    public static void removePlayerPlane(PlayerEntity player) {
-        PlanePersistentState serverState = getServerState(player.getWorld().getServer());
+    public static void removePlayerPlane(Player player) {
+        PlanePersistentState serverState = getServerState(player.level().getServer());
 
-        serverState.players.remove(player.getUuid());
+        serverState.players.remove(player.getUUID());
     }
 }

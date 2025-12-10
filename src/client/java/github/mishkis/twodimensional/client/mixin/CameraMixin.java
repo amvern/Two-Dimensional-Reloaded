@@ -3,13 +3,13 @@ package github.mishkis.twodimensional.client.mixin;
 import github.mishkis.twodimensional.client.TwoDimensionalClient;
 import github.mishkis.twodimensional.client.access.MouseNormalizedGetter;
 import github.mishkis.twodimensional.utils.Plane;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,48 +25,48 @@ public abstract class CameraMixin {
     @Unique
     double twoDimensional$yMouseOffset = 0;
 
-    @Shadow private boolean thirdPerson;
+    @Shadow private boolean detached;
 
-    @Shadow protected abstract void setPos(double x, double y, double z);
+    @Shadow protected abstract void setPosition(double x, double y, double z);
 
     @Shadow protected abstract void setRotation(float yaw, float pitch);
 
-    @Shadow protected abstract void moveBy(double x, double y, double z);
+    @Shadow protected abstract void move(double x, double y, double z);
 
-    @Shadow private float cameraY;
+    @Shadow private float eyeHeight;
 
-    @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V"), cancellable = true)
-    public void update(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"), cancellable = true)
+    public void setup(BlockGetter area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         Plane plane = TwoDimensionalClient.plane;
         if (plane != null) {
-            this.thirdPerson = true;
+            this.detached = true;
 
-            this.setRotation((float) (plane.getYaw() * MathHelper.DEGREES_PER_RADIAN), 0);
+            this.setRotation((float) (plane.getYaw() * Mth.RAD_TO_DEG), 0);
 
-            Vec3d pos = new Vec3d(MathHelper.lerp(tickDelta, focusedEntity.prevX, focusedEntity.getX()), MathHelper.lerp(tickDelta, focusedEntity.prevY, focusedEntity.getY()) + focusedEntity.getStandingEyeHeight(), MathHelper.lerp(tickDelta, focusedEntity.prevZ, focusedEntity.getZ()));
-            this.setPos(pos.x, pos.y, pos.z);
+            Vec3 pos = new Vec3(Mth.lerp(tickDelta, focusedEntity.xo, focusedEntity.getX()), Mth.lerp(tickDelta, focusedEntity.yo, focusedEntity.getY()) + focusedEntity.getEyeHeight(), Mth.lerp(tickDelta, focusedEntity.zo, focusedEntity.getZ()));
+            this.setPosition(pos.x, pos.y, pos.z);
 
-            MouseNormalizedGetter mouse = (MouseNormalizedGetter) MinecraftClient.getInstance().mouse;
+            MouseNormalizedGetter mouse = (MouseNormalizedGetter) Minecraft.getInstance().mouseHandler;
 
-            float mouseOffsetScale = twoDimensional$getMouseOffsetScale(MinecraftClient.getInstance().player);
+            float mouseOffsetScale = twoDimensional$getMouseOffsetScale(Minecraft.getInstance().player);
             double delta = 0.2 - (0.15 * mouseOffsetScale/40);
 
-            twoDimensional$xMouseOffset = MathHelper.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
-            twoDimensional$yMouseOffset = MathHelper.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
+            twoDimensional$xMouseOffset = Mth.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
+            twoDimensional$yMouseOffset = Mth.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
 
-            this.moveBy(-8, twoDimensional$yMouseOffset, twoDimensional$xMouseOffset);
+            this.move(-8, twoDimensional$yMouseOffset, twoDimensional$xMouseOffset);
 
             ci.cancel();
         }
     }
 
     @Unique
-    private float twoDimensional$getMouseOffsetScale(PlayerEntity player) {
+    private float twoDimensional$getMouseOffsetScale(Player player) {
         if (player == null || !player.isUsingItem()) {
             return 1;
         }
 
-        return switch (player.getActiveItem().getItem().getTranslationKey()) {
+        return switch (player.getUseItem().getItem().getDescriptionId()) {
             case "item.minecraft.bow" -> 10;
             case "item.minecraft.spyglass" -> 40;
             default -> 1;

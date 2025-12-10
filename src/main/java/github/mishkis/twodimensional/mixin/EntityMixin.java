@@ -4,11 +4,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,7 +25,7 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
     @Override
     @Nullable
     public Plane twoDimensional$getPlane() {
-        if ((Object)this instanceof ServerPlayerEntity player) {
+        if ((Object)this instanceof ServerPlayer player) {
             return PlanePersistentState.getPlayerPlane(player);
         }
 
@@ -36,72 +36,72 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
     public void twoDimensional$setPlane(Plane plane) {
         this.twoDimensional$plane = plane;
     }
-    @Shadow public abstract void setVelocity(Vec3d velocity);
+    @Shadow public abstract void setDeltaMovement(Vec3 velocity);
 
-    @Shadow public abstract Vec3d getVelocity();
+    @Shadow public abstract Vec3 getDeltaMovement();
 
-    @Shadow private static Vec3d movementInputToVelocity(Vec3d movementInput, float speed, float yaw) {return null;}
+    @Shadow private static Vec3 getInputVector(Vec3 movementInput, float speed, float yaw) {return null;}
 
-    @Shadow private Vec3d velocity;
+    @Shadow private Vec3 deltaMovement;
 
-    @Shadow private Vec3d pos;
+    @Shadow private Vec3 position;
 
-    @Shadow private BlockPos blockPos;
+    @Shadow private BlockPos blockPosition;
 
-    @Shadow public abstract Vec3d getPos();
+    @Shadow public abstract Vec3 position();
 
-    @Shadow public abstract float getYaw();
+    @Shadow public abstract float getYRot();
 
-    @Shadow public double prevX;
+    @Shadow public double xo;
 
-    @Shadow public double prevY;
+    @Shadow public double yo;
 
-    @Shadow public double prevZ;
+    @Shadow public double zo;
 
-    @Inject(method = "updateVelocity", at = @At("HEAD"), cancellable = true)
-    public void updateVelocity(float speed, Vec3d movementInput, CallbackInfo ci) {
+    @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
+    public void moveRelative(float speed, Vec3 movementInput, CallbackInfo ci) {
         if (twoDimensional$getPlane() != null) {
             // convert z movement into movement in direction of yaw
-            double planeYaw = twoDimensional$getPlane().getYaw() * MathHelper.DEGREES_PER_RADIAN;
-            movementInput = new Vec3d(movementInput.x + movementInput.z * MathHelper.sign(this.getYaw() - 180 - planeYaw), movementInput.y, 0.);
-            this.setVelocity(this.getVelocity().add(movementInputToVelocity(movementInput, speed, (float) (planeYaw))));
+            double planeYaw = twoDimensional$getPlane().getYaw() * Mth.RAD_TO_DEG;
+            movementInput = new Vec3(movementInput.x + movementInput.z * Mth.sign(this.getYRot() - 180 - planeYaw), movementInput.y, 0.);
+            this.setDeltaMovement(this.getDeltaMovement().add(getInputVector(movementInput, speed, (float) (planeYaw))));
             ci.cancel();
         }
     }
 
-    @Inject(method = "setVelocity(Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), cancellable = true)
-    public void clampVelocityToPlane(Vec3d velocity, CallbackInfo ci) {
+    @Inject(method = "setDeltaMovement(Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"), cancellable = true)
+    public void clampVelocityToPlane(Vec3 velocity, CallbackInfo ci) {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {
-            this.velocity = plane.intersectPoint(velocity.add(this.getPos())).subtract(this.getPos());
+            this.deltaMovement = plane.intersectPoint(velocity.add(this.position())).subtract(this.position());
             ci.cancel();
         }
     }
 
-    @Inject(method = "setPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;<init>(DDD)V", shift = At.Shift.AFTER))
+    @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", shift = At.Shift.AFTER))
     public void clampSetPos(double x, double y, double z, CallbackInfo ci) {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {
-            this.pos = plane.intersectPoint(new Vec3d(x, y, z));
+            this.position = plane.intersectPoint(new Vec3(x, y, z));
         }
     }
 
-    @Inject(method = "setPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;<init>(III)V", shift = At.Shift.AFTER))
+    @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;<init>(III)V", shift = At.Shift.AFTER))
     public void clampBlockPos(double x, double y, double z, CallbackInfo ci) {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {
-            this.blockPos = BlockPos.ofFloored(plane.intersectPoint(new Vec3d(x, y, z)));
+            this.blockPosition = BlockPos.containing(plane.intersectPoint(new Vec3(x, y, z)));
         }
     }
 
-    @Inject(method = "updatePosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setPosition(DDD)V"))
+    @Inject(method = "absMoveTo(DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V"))
     private void clampPrevPos(double x, double y, double z, CallbackInfo ci, @Local (ordinal = 0) double d, @Local (ordinal = 1) double e) {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {
-            Vec3d clampedPos = plane.intersectPoint(new Vec3d(d, y, e));
-            this.prevX = clampedPos.x;
-            this.prevY = clampedPos.y;
-            this.prevZ = clampedPos.z;
+            Vec3 clampedPos = plane.intersectPoint(new Vec3(d, y, e));
+            this.xo = clampedPos.x;
+            this.yo = clampedPos.y;
+            this.zo = clampedPos.z;
         }
     }
 }
