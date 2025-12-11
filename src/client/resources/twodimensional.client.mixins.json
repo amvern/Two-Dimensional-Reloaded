@@ -2,19 +2,16 @@
   "required": true,
   "minVersion": "0.8",
   "package": "github.mishkis.twodimensional.client.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "client": [
-    "BlockMixin",
     "CameraMixin",
     "EntityMixin",
     "InputMixin",
     "LevelRendererMixin",
-    "LiquidBlockRendererMixin",
     "LocalPlayerMixin",
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
-    "OptionsMixin",
-    "TerrainRenderContextMixin"
+    "OptionsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
