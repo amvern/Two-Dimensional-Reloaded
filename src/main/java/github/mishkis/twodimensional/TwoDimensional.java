@@ -1,6 +1,8 @@
 package github.mishkis.twodimensional;
 
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
+import github.mishkis.twodimensional.access.InteractionLayerGetterSetter;
+import github.mishkis.twodimensional.utils.InteractionLayerPayload;
 import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
 import net.fabricmc.api.ModInitializer;
@@ -57,9 +59,27 @@ public class TwoDimensional implements ModInitializer {
                 PlaneSyncPayload.CODEC
         );
 
+        PayloadTypeRegistry.playC2S().register(
+                InteractionLayerPayload.TYPE,
+                InteractionLayerPayload.CODEC
+        );
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             setPlayerPlane(server, handler.getPlayer());
         });
+
+        ServerPlayNetworking.registerGlobalReceiver(
+                InteractionLayerPayload.TYPE,
+                (payload, ctx) -> {
+                    try {
+                        ctx.server().execute(() -> {
+                            ((InteractionLayerGetterSetter) ctx.player()).setInteractionLayer(payload.mode());
+                        });
+                    } catch (Exception err) {
+                        TwoDimensional.LOGGER.info(err.getMessage());
+                    }
+                }
+        );
     }
 
 }
