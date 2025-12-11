@@ -31,9 +31,7 @@ public abstract class CameraMixin {
 
     @Shadow protected abstract void setRotation(float yaw, float pitch);
 
-    @Shadow protected abstract void move(float f, float g, float h);
-
-    @Shadow private float eyeHeight;
+    @Shadow protected abstract void move(float x, float y, float z);
 
     @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"), cancellable = true)
     public void setup(BlockGetter area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
@@ -41,7 +39,7 @@ public abstract class CameraMixin {
         if (plane != null) {
             this.detached = true;
 
-            this.setRotation((float) (plane.getYaw() * Mth.RAD_TO_DEG), 0);
+            this.setRotation(0f, 0f);
 
             Vec3 pos = new Vec3(Mth.lerp(tickDelta, focusedEntity.xo, focusedEntity.getX()), Mth.lerp(tickDelta, focusedEntity.yo, focusedEntity.getY()) + focusedEntity.getEyeHeight(), Mth.lerp(tickDelta, focusedEntity.zo, focusedEntity.getZ()));
             this.setPosition(pos.x, pos.y, pos.z);
@@ -54,13 +52,7 @@ public abstract class CameraMixin {
             twoDimensional$xMouseOffset = Mth.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
             twoDimensional$yMouseOffset = Mth.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
 
-            //this.move(-8, twoDimensional$yMouseOffset, twoDimensional$xMouseOffset);
-            this.move(
-                    -8.0f,
-                    (float) twoDimensional$yMouseOffset,
-                    (float) twoDimensional$xMouseOffset
-            );
-
+            this.move(-8, (float) twoDimensional$yMouseOffset, (float) -twoDimensional$xMouseOffset);
 
             ci.cancel();
         }

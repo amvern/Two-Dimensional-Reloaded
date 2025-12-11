@@ -2,8 +2,8 @@ package github.mishkis.twodimensional.client;
 
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
-import github.mishkis.twodimensional.client.rendering.TwoDimensionalCrosshairRenderer;
-import github.mishkis.twodimensional.client.rendering.TwoDimensionalShaders;
+import github.mishkis.twodimensional.utils.InteractionLayerPayload;
+import github.mishkis.twodimensional.utils.LayerMode;
 import github.mishkis.twodimensional.utils.Plane;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -11,22 +11,14 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
-import org.ladysnake.satin.api.event.PostWorldRenderCallback;
-import org.ladysnake.satin.api.event.ShaderEffectRenderCallback;
 import org.lwjgl.glfw.GLFW;
-
 
 public class TwoDimensionalClient implements ClientModInitializer {
     public static Plane plane = null;
-    public static KeyMapping turnedAround = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.twodimensional.turn_around",
+    private LayerMode lastMode = LayerMode.BASE;
+    public static KeyMapping faceAway = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.twodimensional.face_away",
             GLFW.GLFW_KEY_B,
-            "keyGroup.twodimensional"
-    ));
-    public static KeyMapping turnedAround180 = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.twodimensional.turnedAround180",
-            GLFW.GLFW_KEY_V,
             "keyGroup.twodimensional"
     ));
 
@@ -39,10 +31,7 @@ public class TwoDimensionalClient implements ClientModInitializer {
                 TwoDimensional.PlaneSyncPayload.TYPE,
                 (payload, ctx) -> {
                     Minecraft.getInstance().execute(() -> {
-                        TwoDimensionalClient.plane = new Plane(
-                                new Vec3(payload.x(), 0, payload.z()),
-                                payload.yaw()
-                        );
+                        TwoDimensionalClient.plane = new Plane();
                     });
                     shouldUpdatePlane = true;
                     Minecraft.getInstance().mouseHandler.releaseMouse();
@@ -59,8 +48,16 @@ public class TwoDimensionalClient implements ClientModInitializer {
             }
         }));
 
-        PostWorldRenderCallback.EVENT.register(TwoDimensionalShaders.INSTANCE);
-        ShaderEffectRenderCallback.EVENT.register(TwoDimensionalShaders.INSTANCE);
-        TwoDimensionalCrosshairRenderer.intialize();
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player == null || client.level == null || client.getConnection() == null) return;
+
+            LayerMode mode = TwoDimensionalClient.faceAway.isDown() ? LayerMode.FACE_AWAY
+                    : LayerMode.BASE;
+
+            if (mode != lastMode) {
+                lastMode = mode;
+                ClientPlayNetworking.send(new InteractionLayerPayload(mode));
+            }
+        });
     }
 }

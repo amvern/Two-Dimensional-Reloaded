@@ -3,6 +3,8 @@ package github.mishkis.twodimensional.mixin;
 import com.mojang.authlib.GameProfile;
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
+import github.mishkis.twodimensional.access.InteractionLayerGetterSetter;
+import github.mishkis.twodimensional.utils.LayerMode;
 import github.mishkis.twodimensional.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -12,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
@@ -19,10 +22,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerEntityMixin extends Player {
-    @Shadow public abstract ServerLevel serverLevel();
+public abstract class ServerPlayerMixin extends Player implements InteractionLayerGetterSetter {
+    private LayerMode currentLayer = LayerMode.BASE;
 
-    public ServerPlayerEntityMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
+    public ServerPlayerMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
@@ -32,8 +35,6 @@ public abstract class ServerPlayerEntityMixin extends Player {
         ((EntityPlaneGetterSetter) this).twoDimensional$setPlane(plane);
 
         if (plane != null) {
-            // sync to client
-            //TwoDimensional.updatePlane(this.getServer(), (ServerPlayer) (Player) this, plane.getOffset().x, plane.getOffset().z, plane.getYaw());
             TwoDimensional.setPlayerPlane(this.getServer(), (ServerPlayer) (Player) this);
         }
     }
@@ -49,4 +50,15 @@ public abstract class ServerPlayerEntityMixin extends Player {
             args.set(2, (int) intersectPoint.z);
         }
     }
+
+    @Override
+    public void setInteractionLayer(LayerMode mode) {
+        this.currentLayer = mode;
+    }
+
+    @Override
+    public LayerMode getInteractionLayer() {
+        return currentLayer;
+    }
+
 }

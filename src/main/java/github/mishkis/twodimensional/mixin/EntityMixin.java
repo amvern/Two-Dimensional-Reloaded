@@ -61,10 +61,8 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
     @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
     public void moveRelative(float speed, Vec3 movementInput, CallbackInfo ci) {
         if (twoDimensional$getPlane() != null) {
-            // convert z movement into movement in direction of yaw
-            double planeYaw = twoDimensional$getPlane().getYaw() * Mth.RAD_TO_DEG;
-            movementInput = new Vec3(movementInput.x + movementInput.z * Mth.sign(this.getYRot() - 180 - planeYaw), movementInput.y, 0.);
-            this.setDeltaMovement(this.getDeltaMovement().add(getInputVector(movementInput, speed, (float) (planeYaw))));
+            movementInput = new Vec3(movementInput.x + movementInput.z * Mth.sign(this.getYRot() - 180), movementInput.y, 0.);
+            this.setDeltaMovement(this.getDeltaMovement().add(getInputVector(movementInput, speed, 0f)));
             ci.cancel();
         }
     }
@@ -86,7 +84,7 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
         }
     }
 
-    @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", shift = At.Shift.AFTER))
+    @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;<init>(III)V", shift = At.Shift.AFTER))
     public void clampBlockPos(double x, double y, double z, CallbackInfo ci) {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {

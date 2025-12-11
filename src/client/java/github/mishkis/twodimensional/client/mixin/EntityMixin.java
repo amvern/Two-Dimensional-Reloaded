@@ -43,8 +43,8 @@ public abstract class EntityMixin {
             float pitch = (float) (Mth.atan2(-mouse.twoDimensional$getNormalizedY() * 0.60, Math.abs(mouse.twoDimensional$getNormalizedX())) * Mth.RAD_TO_DEG);
             this.setXRot(Mth.clamp(pitch, -90, 90));
 
-            double base = plane.getYaw() * Mth.RAD_TO_DEG;
-            if (TwoDimensionalClient.turnedAround.isDown()) {
+            double base = 0;
+            if (TwoDimensionalClient.faceAway.isDown()) {
                 this.setYRot((float) Mth.lerp(Mth.clamp(3. * mouse.twoDimensional$getNormalizedX() + 0.5, 0, 1), base + 90, base - 90));
             } else {
                 this.setYRot((float) Mth.lerp(Mth.clamp(7 * mouse.twoDimensional$getNormalizedX() + 0.5, 0, 1), base + 90, base + 270));

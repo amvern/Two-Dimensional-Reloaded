@@ -22,8 +22,8 @@ public class ServerGamePacketListenerImplMixin {
     @Unique
     Vec3 TwoDimensional$intersectPoint;
 
-//     this is kinda jank
- @Inject(method = "teleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"))
+    // this is kinda jank
+    @Inject(method = "teleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"))
     private void clampInput(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> flags, CallbackInfo ci) {
         Plane plane = ((EntityPlaneGetterSetter) this.player).twoDimensional$getPlane();
         if (plane != null) {
