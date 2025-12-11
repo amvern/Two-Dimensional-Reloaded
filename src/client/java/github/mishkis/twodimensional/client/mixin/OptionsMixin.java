@@ -2,6 +2,7 @@ package github.mishkis.twodimensional.client.mixin;
 
 import github.mishkis.twodimensional.client.TwoDimensionalClient;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,6 +15,16 @@ public class OptionsMixin {
     public void getCameraType(CallbackInfoReturnable<CameraType> cir) {
         if (TwoDimensionalClient.plane != null) {
             cir.setReturnValue(CameraType.THIRD_PERSON_BACK);
+        }
+    }
+
+    /**
+     * Force view bobbing off, it behaves oddly with the offset camera POV imo
+     * */
+    @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
+    private void cancelBob(CallbackInfoReturnable<OptionInstance<Boolean>> cir) {
+        if (TwoDimensionalClient.plane != null) {
+            cir.setReturnValue(OptionInstance.createBoolean("options.viewBobbing", false));
         }
     }
 }
