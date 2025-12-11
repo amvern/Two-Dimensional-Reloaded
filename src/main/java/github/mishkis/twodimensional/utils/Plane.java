@@ -10,7 +10,7 @@ public class Plane {
     public static double CULL_DIST = -0.5;
     public List<Entity> containedEntities = new ArrayList<Entity>();
 
-    private final double z = 0;
+    private final double z = 0.5;
     private final Vec3 normal = new Vec3(0, 0, 1);
 
     public Plane() {}
