@@ -36,7 +36,7 @@ public class PlanePersistentState extends SavedData {
         PlanePersistentState state = new PlanePersistentState();
         CompoundTag playersNbt = nbt.getCompound("players");
         playersNbt.getAllKeys().forEach(key -> {
-            Plane plane = new Plane(playersNbt.getCompound(key).getDouble("z"));
+            Plane plane = new Plane();
             state.players.put(UUID.fromString(key), plane);
         });
         return state;
@@ -72,9 +72,9 @@ public class PlanePersistentState extends SavedData {
         return serverState.players.get(player.getUUID());
     }
 
-    public static void setPlayerPlane(Player player, double z) {
+    public static void setPlayerPlane(Player player) {
         PlanePersistentState serverState = getServerState(player.level().getServer());
 
-        serverState.players.put(player.getUUID(), new Plane(z));
+        serverState.players.put(player.getUUID(), new Plane());
     }
 }

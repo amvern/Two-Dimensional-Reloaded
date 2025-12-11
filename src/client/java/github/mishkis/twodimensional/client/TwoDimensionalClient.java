@@ -28,7 +28,7 @@ public class TwoDimensionalClient implements ClientModInitializer {
                 TwoDimensional.PlaneSyncPayload.TYPE,
                 (payload, ctx) -> {
                     Minecraft.getInstance().execute(() -> {
-                        TwoDimensionalClient.plane = new Plane(payload.z());
+                        TwoDimensionalClient.plane = new Plane();
                     });
                     shouldUpdatePlane = true;
                     Minecraft.getInstance().mouseHandler.releaseMouse();

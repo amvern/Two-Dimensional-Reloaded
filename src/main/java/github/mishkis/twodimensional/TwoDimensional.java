@@ -39,8 +39,8 @@ public class TwoDimensional implements ModInitializer {
         double x = player.getBlockX() + 0.5;
         double z = player.getBlockZ() + 0.5;
 
-        final Plane plane = new Plane(z);
-        PlanePersistentState.setPlayerPlane(player, z);
+        final Plane plane = new Plane();
+        PlanePersistentState.setPlayerPlane(player);
 
         server.execute(() -> {
             ServerPlayNetworking.send(player, new PlaneSyncPayload(z));
