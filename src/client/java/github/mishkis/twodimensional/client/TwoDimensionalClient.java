@@ -1,7 +1,6 @@
 package github.mishkis.twodimensional.client;
 
 import github.mishkis.twodimensional.TwoDimensional;
-import github.mishkis.twodimensional.client.rendering.TwoDimensionalCrosshairRenderer;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.utils.Plane;
 import net.fabricmc.api.ClientModInitializer;
@@ -45,7 +44,5 @@ public class TwoDimensionalClient implements ClientModInitializer {
                 Minecraft.getInstance().mouseHandler.grabMouse();;
             }
         }));
-
-        TwoDimensionalCrosshairRenderer.initialize();
     }
 }

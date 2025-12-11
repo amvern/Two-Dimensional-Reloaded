@@ -1,6 +1,5 @@
 package github.mishkis.twodimensional.client.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import github.mishkis.twodimensional.client.TwoDimensionalClient;
