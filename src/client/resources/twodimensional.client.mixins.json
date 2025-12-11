@@ -13,11 +13,9 @@
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
     "OptionsMixin",
-    "BlockBehaviourMixin",
     "sodium.BlockOcclusionCacheMixin",
     "sodium.BlockRendererMixin",
-    "sodium.DefaultFluidRendererMixin",
-    "sodium.SmoothLightPipelineMixin"
+    "sodium.DefaultFluidRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

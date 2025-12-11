@@ -7,7 +7,8 @@
     "EntityMixin",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
-    "ServerPlayerMixin"
+    "ServerPlayerMixin",
+    "SpikeFeatureMixin"
   ],
   "injectors": {
     "defaultRequire": 1
