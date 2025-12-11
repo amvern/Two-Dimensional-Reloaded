@@ -2,10 +2,11 @@ package github.mishkis.twodimensional;
 
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
 import github.mishkis.twodimensional.access.InteractionLayerGetterSetter;
-import github.mishkis.twodimensional.utils.InteractionLayerPayload;
+import github.mishkis.twodimensional.network.InteractionLayerPayload;
 import github.mishkis.twodimensional.utils.Plane;
 import github.mishkis.twodimensional.utils.PlanePersistentState;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,8 +16,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.logging.Logger;
+
 
 public class TwoDimensional implements ModInitializer {
     public static final String MOD_ID = "two_dimensional";
@@ -68,6 +71,12 @@ public class TwoDimensional implements ModInitializer {
             setPlayerPlane(server, handler.getPlayer());
         });
 
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(
+                (ServerPlayer player, ServerLevel origin, ServerLevel destination) -> {
+                    TwoDimensional.setPlayerPlane(player.getServer(), player);
+                }
+        );
+
         ServerPlayNetworking.registerGlobalReceiver(
                 InteractionLayerPayload.TYPE,
                 (payload, ctx) -> {
@@ -81,5 +90,4 @@ public class TwoDimensional implements ModInitializer {
                 }
         );
     }
-
 }

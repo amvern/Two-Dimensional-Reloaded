@@ -2,7 +2,7 @@ package github.mishkis.twodimensional.client;
 
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
-import github.mishkis.twodimensional.utils.InteractionLayerPayload;
+import github.mishkis.twodimensional.network.InteractionLayerPayload;
 import github.mishkis.twodimensional.utils.LayerMode;
 import github.mishkis.twodimensional.utils.Plane;
 import net.fabricmc.api.ClientModInitializer;

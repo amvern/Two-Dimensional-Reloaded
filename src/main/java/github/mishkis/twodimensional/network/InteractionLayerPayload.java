@@ -1,6 +1,7 @@
-package github.mishkis.twodimensional.utils;
+package github.mishkis.twodimensional.network;
 
 import github.mishkis.twodimensional.TwoDimensional;
+import github.mishkis.twodimensional.utils.LayerMode;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
