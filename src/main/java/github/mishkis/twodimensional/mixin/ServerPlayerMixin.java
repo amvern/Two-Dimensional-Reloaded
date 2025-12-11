@@ -3,6 +3,7 @@ package github.mishkis.twodimensional.mixin;
 import com.mojang.authlib.GameProfile;
 import github.mishkis.twodimensional.TwoDimensional;
 import github.mishkis.twodimensional.access.EntityPlaneGetterSetter;
+import github.mishkis.twodimensional.access.InteractionLayerGetterSetter;
 import github.mishkis.twodimensional.utils.LayerMode;
 import github.mishkis.twodimensional.utils.Plane;
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin extends Player {
+public abstract class ServerPlayerMixin extends Player implements InteractionLayerGetterSetter {
     private LayerMode currentLayer = LayerMode.BASE;
 
     public ServerPlayerMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
@@ -50,12 +51,12 @@ public abstract class ServerPlayerMixin extends Player {
         }
     }
 
-    @Unique
+    @Override
     public void setInteractionLayer(LayerMode mode) {
         this.currentLayer = mode;
     }
 
-    @Unique
+    @Override
     public LayerMode getInteractionLayer() {
         return currentLayer;
     }
