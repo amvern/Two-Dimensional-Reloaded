@@ -16,7 +16,6 @@
     "sodium.BlockOcclusionCacheMixin",
     "sodium.BlockRendererMixin",
     "sodium.DefaultFluidRendererMixin",
-    "BlockStateBaseMixin",
     "sodium.SmoothLightPipelineMixin"
   ],
   "injectors": {
