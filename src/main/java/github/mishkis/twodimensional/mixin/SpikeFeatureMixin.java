@@ -3,26 +3,27 @@ package github.mishkis.twodimensional.mixin;
 import github.mishkis.twodimensional.TwoDimensional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.SpikeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.SpikeConfiguration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This mixin adjusts the end island pillars to align to z = 0. Currently reduces the number and spread to ensure they fit on the island
+ * */
 @Mixin(SpikeFeature.class)
 public class SpikeFeatureMixin {
 
@@ -53,6 +54,11 @@ public class SpikeFeatureMixin {
         }
 
         cir.setReturnValue(spikes);
+    }
+
+    @ModifyArgs(method = "placeSpike", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EndCrystal;moveTo(DDDFF)V"), require = 0)
+    private void adjustCrystalPos(Args args) {
+        args.set(2, (double) args.get(2) + 0.2);
     }
 
     @Inject(method = "placeSpike", at = @At("RETURN"))
