@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//TODO: constain the newly rendered side to be < a full block to match top of end portal block
 /**
  * This mixin forces the end portal blocks to render the normally hidden face where the fountain edge gets culled
  */
