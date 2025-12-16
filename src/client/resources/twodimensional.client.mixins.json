@@ -13,11 +13,16 @@
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
     "OptionsMixin",
+    "TheEndPortalBlockEntityMixin",
+    "TheEndPortalRendererMixin",
+    "sodium.DefaultFluidRendererMixin",
+    "BlockStateBaseMixin",
+    "sodium.SodiumWorldRendererMixin",
+    "sodium.SodiumWorldRendererAccessor",
     "sodium.BlockOcclusionCacheMixin",
     "sodium.BlockRendererMixin",
-    "sodium.DefaultFluidRendererMixin",
-    "TheEndPortalRendererMixin",
-    "TheEndPortalBlockEntityMixin"
+    "sodium.AbstractBlockRenderContextAccessor",
+    "sodium.LightDataAccessMixin"
   ],
   "injectors": {
     "defaultRequire": 1
