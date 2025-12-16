@@ -8,7 +8,11 @@
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin",
-    "SpikeFeatureMixin"
+    "SpikeFeatureMixin",
+    "ChunkGeneratorStructureStateMixin",
+    "StartPieceMixin",
+    "PortalRoomMixin",
+    "StructurePieceInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

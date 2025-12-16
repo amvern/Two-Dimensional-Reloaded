@@ -25,8 +25,7 @@ public abstract class SmoothLightPipelineMixin {
                                  Direction lightFace, boolean shade, boolean enhanced, CallbackInfo ci) {
 
         Plane plane = TwoDimensionalClient.plane;
-        //boolean isPlaneBlock = plane != null && Math.abs(pos.getZ() - plane.getZ()) <= 0.5;
-        boolean isPlaneBlock = plane != null && pos.getZ() == 0;
+        boolean isPlaneBlock = plane != null && Math.abs(pos.getZ() - plane.getZ()) <= 0.5;
 
         if (isPlaneBlock) {
             propagatePlaneLighting(pos, out);
@@ -40,7 +39,7 @@ public abstract class SmoothLightPipelineMixin {
     private void propagatePlaneLighting(BlockPos pos, QuadLightData out) {
         int maxSky = 0;
         int maxBlock = 0;
-        float ao = 1f;
+        float ao = 0.5f;
 
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
