@@ -23,7 +23,8 @@
     "sodium.BlockRendererMixin",
     "sodium.AbstractBlockRenderContextAccessor",
     "ParticleAccessor",
-    "ParticleEngineMixin"
+    "ParticleEngineMixin",
+    "sodium.LightDataAccessMixin"
   ],
   "injectors": {
     "defaultRequire": 1
