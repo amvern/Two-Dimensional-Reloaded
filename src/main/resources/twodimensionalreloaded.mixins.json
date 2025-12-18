@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "github.amvern.twodimensionalreloaded.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EntityMixin",
+    "PlayerMixin",
+    "ServerGamePacketListenerImplMixin",
+    "ServerPlayerMixin",
+    "SpikeFeatureMixin",
+    "ChunkGeneratorStructureStateMixin",
+    "StartPieceMixin",
+    "PortalRoomMixin",
+    "StructurePieceInvoker",
+    "PortalProcessorMixin",
+    "NetherPortalBlockMixin",
+    "PortalForcerMixin",
+    "PortalForcerAccessor",
+    "NetherFortressStartPieceMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

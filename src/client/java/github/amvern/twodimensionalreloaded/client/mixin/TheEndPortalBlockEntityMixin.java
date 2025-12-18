@@ -1,0 +1,29 @@
+package github.amvern.twodimensionalreloaded.client.mixin;
+
+import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
+import github.amvern.twodimensionalreloaded.utils.Plane;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TheEndPortalBlockEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+/**
+ * This mixin forces the end portal blocks to render the normally hidden face where the fountain edge gets culled
+ */
+@Mixin(TheEndPortalBlockEntity.class)
+public class TheEndPortalBlockEntityMixin {
+
+    @Inject(method = "shouldRenderFace", at = @At("HEAD"), cancellable = true)
+    private void renderExposedFace(Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        BlockEntity be = (BlockEntity) (Object) this;
+        BlockPos adjacentPos = be.getBlockPos().relative(direction);
+
+        if (Plane.shouldCull(adjacentPos, TwoDimensionalReloadedClient.plane)) {
+            cir.setReturnValue(true);
+        }
+    }
+}

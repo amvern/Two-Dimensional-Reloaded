@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
-  "id": "twodimensional",
+  "id": "twodimensionalreloaded",
   "version": "${version}",
-  "name": "Two Dimensional",
-  "description": "Removes the third dimension from the game (Made for itsjim 2025 competition)",
-  "authors": ["Mishkis"],
+  "name": "Two Dimensional: Reloaded",
+  "description": "A continuation of TwoDimensional by Mishkis",
+  "authors": ["amvern", "Mishkis"],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/twodimensional/icon.png",
+  "icon": "assets/twodimensionalreloaded/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "github.mishkis.twodimensional.client.TwoDimensionalClient"
+      "github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient"
     ],
     "main": [
-      "github.mishkis.twodimensional.TwoDimensional"
+      "github.amvern.twodimensionalreloaded.TwoDimensionalReloaded"
     ]
   },
   "mixins": [
-    "twodimensional.mixins.json",
+    "twodimensionalreloaded.mixins.json",
     {
-      "config": "twodimensional.client.mixins.json",
+      "config": "twodimensionalreloaded.client.mixins.json",
       "environment": "client"
     }
   ],
