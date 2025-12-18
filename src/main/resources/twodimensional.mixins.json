@@ -16,7 +16,8 @@
     "PortalProcessorMixin",
     "NetherPortalBlockMixin",
     "PortalForcerMixin",
-    "PortalForcerAccessor"
+    "PortalForcerAccessor",
+    "NetherFortressStartPieceMixin"
   ],
   "injectors": {
     "defaultRequire": 1
