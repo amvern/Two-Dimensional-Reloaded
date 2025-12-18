@@ -12,7 +12,11 @@
     "ChunkGeneratorStructureStateMixin",
     "StartPieceMixin",
     "PortalRoomMixin",
-    "StructurePieceInvoker"
+    "StructurePieceInvoker",
+    "PortalProcessorMixin",
+    "NetherPortalBlockMixin",
+    "PortalForcerMixin",
+    "PortalForcerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
