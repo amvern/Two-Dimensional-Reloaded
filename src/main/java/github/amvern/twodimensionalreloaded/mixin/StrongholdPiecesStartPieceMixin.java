@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Mixin to set start piece orientation along Plane
  */
 @Mixin(StrongholdPieces.StartPiece.class)
-public abstract class StartPieceMixin {
+public abstract class StrongholdPiecesStartPieceMixin {
 
     @Inject(method = "<init>(Lnet/minecraft/util/RandomSource;II)V", at = @At("RETURN"))
     private void forceStrongholdXDirection(RandomSource random, int x, int z, CallbackInfo ci) {

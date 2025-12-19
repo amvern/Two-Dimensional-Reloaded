@@ -10,14 +10,15 @@
     "ServerPlayerMixin",
     "SpikeFeatureMixin",
     "ChunkGeneratorStructureStateMixin",
-    "StartPieceMixin",
-    "PortalRoomMixin",
+    "StrongholdPiecesStartPieceMixin",
+    "StrongholdPiecesPortalRoomMixin",
     "StructurePieceInvoker",
     "PortalProcessorMixin",
     "NetherPortalBlockMixin",
     "PortalForcerMixin",
     "PortalForcerAccessor",
-    "NetherFortressStartPieceMixin"
+    "NetherFortressStartPieceMixin",
+    "StructurePlacementMixin"
   ],
   "injectors": {
     "defaultRequire": 1

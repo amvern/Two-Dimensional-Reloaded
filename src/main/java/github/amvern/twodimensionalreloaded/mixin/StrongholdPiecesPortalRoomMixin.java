@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Mixin to shift portal room so it gets centered on Plane
  * */
 @Mixin(StrongholdPieces.PortalRoom.class)
-public class PortalRoomMixin {
+public class StrongholdPiecesPortalRoomMixin {
 
     @Inject(
             method = "<init>(ILnet/minecraft/world/level/levelgen/structure/BoundingBox;Lnet/minecraft/core/Direction;)V",
