@@ -32,7 +32,7 @@ public abstract class LightDataAccessMixin {
 
         BlockPos p = this.pos.set(x, y, z);
 
-        int light = LevelRenderer.getLightColor(this.level, this.level.getBlockState(p), p);
+        int light = LevelRenderer.getLightColor(LevelRenderer.BrightnessGetter.DEFAULT, this.level, this.level.getBlockState(p), p);
         int bl = LightTexture.block(light);
         int sl = LightTexture.sky(light);
 

@@ -5,12 +5,12 @@ import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record InteractionLayerPayload(LayerMode mode) implements CustomPacketPayload {
 
     public static final Type<InteractionLayerPayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "interaction_layer"));
+            new Type<>(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "interaction_layer"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InteractionLayerPayload> CODEC =
             StreamCodec.of(

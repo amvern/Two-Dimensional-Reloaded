@@ -7,11 +7,14 @@ import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
@@ -20,10 +23,11 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player implements InteractionLayerGetterSetter {
+    @Shadow @Final private MinecraftServer server;
     private LayerMode currentLayer = LayerMode.BASE;
 
-    public ServerPlayerMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
-        super(world, pos, yaw, gameProfile);
+    public ServerPlayerMixin(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
     }
 
     @Inject(method = "restoreFrom", at = @At("HEAD"))
@@ -32,21 +36,22 @@ public abstract class ServerPlayerMixin extends Player implements InteractionLay
         ((EntityPlaneGetterSetter) this).twoDimensional$setPlane(plane);
 
         if (plane != null) {
-            TwoDimensionalReloaded.setPlayerPlane(this.getServer(), (ServerPlayer) (Player) this);
+            TwoDimensionalReloaded.setPlayerPlane(this.server, (ServerPlayer) (Player) this);
         }
     }
 
-    @ModifyArgs(method = "adjustSpawnLocation", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/PlayerRespawnLogic;getOverworldRespawnPos(Lnet/minecraft/server/level/ServerLevel;II)Lnet/minecraft/core/BlockPos;"))
-    private void clampSpawnXZ(Args args) {
-        Plane plane = ((EntityPlaneGetterSetter) this).twoDimensional$getPlane();
-        if (plane != null) {
-            int x = args.get(1);
-            int z = args.get(2);
-            Vec3 intersectPoint = plane.intersectPoint(new Vec3(x, 0, z));
-            args.set(1, (int) intersectPoint.x);
-            args.set(2, (int) intersectPoint.z);
-        }
-    }
+    //TODO: adjustSpawnLocation
+//    @ModifyArgs(method = "adjustSpawnLocation", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/PlayerRespawnLogic;getOverworldRespawnPos(Lnet/minecraft/server/level/ServerLevel;II)Lnet/minecraft/core/BlockPos;"))
+//    private void clampSpawnXZ(Args args) {
+//        Plane plane = ((EntityPlaneGetterSetter) this).twoDimensional$getPlane();
+//        if (plane != null) {
+//            int x = args.get(1);
+//            int z = args.get(2);
+//            Vec3 intersectPoint = plane.intersectPoint(new Vec3(x, 0, z));
+//            args.set(1, (int) intersectPoint.x);
+//            args.set(2, (int) intersectPoint.z);
+//        }
+//    }
 
     @Override
     public void setInteractionLayer(LayerMode mode) {

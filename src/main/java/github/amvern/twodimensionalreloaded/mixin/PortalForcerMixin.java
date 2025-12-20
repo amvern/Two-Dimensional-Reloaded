@@ -1,6 +1,6 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
-import net.minecraft.BlockUtil;
+import net.minecraft.util.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;

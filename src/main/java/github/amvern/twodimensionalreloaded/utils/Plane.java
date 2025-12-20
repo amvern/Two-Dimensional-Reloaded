@@ -2,16 +2,19 @@ package github.amvern.twodimensionalreloaded.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 public class Plane {
-    public static double CULL_DIST = -0.5;
-    public List<Entity> containedEntities = new ArrayList<Entity>();
-
+    public static final double CULL_DIST = -0.5;
     private final double z = 0.5;
     private final Vec3 normal = new Vec3(0, 0, 1);
+
+    public List<Entity> containedEntities = new ArrayList<Entity>();
 
     public Plane() {}
 
@@ -43,4 +46,5 @@ public class Plane {
     public String toString() {
         return "Plane{z= " + z + " }";
     }
+
 }

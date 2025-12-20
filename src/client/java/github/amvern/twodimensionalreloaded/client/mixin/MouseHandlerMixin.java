@@ -2,6 +2,7 @@ package github.amvern.twodimensionalreloaded.client.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.client.access.MouseNormalizedGetter;
 import org.lwjgl.glfw.GLFW;
@@ -54,10 +55,10 @@ public class MouseHandlerMixin implements MouseNormalizedGetter {
         }
     }
 
-    @WrapWithCondition(method = "grabMouse", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/InputConstants;grabOrReleaseMouse(JIDD)V"))
-    public boolean grabMouse(long handler, int inputModeValue, double x, double y) {
+    @WrapWithCondition(method = "grabMouse", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/InputConstants;grabOrReleaseMouse(Lcom/mojang/blaze3d/platform/Window;IDD)V"))
+    public boolean grabMouse(Window window, int i, double x, double y) {
         if (TwoDimensionalReloadedClient.plane != null) {
-            InputConstants.grabOrReleaseMouse(handler, GLFW.GLFW_CURSOR_HIDDEN, x, y);
+            InputConstants.grabOrReleaseMouse(window, GLFW.GLFW_CURSOR_HIDDEN, x, y);
             return false;
         }
 

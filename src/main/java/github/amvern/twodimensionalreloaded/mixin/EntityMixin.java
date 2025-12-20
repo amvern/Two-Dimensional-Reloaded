@@ -3,11 +3,12 @@ package github.amvern.twodimensionalreloaded.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import github.amvern.twodimensionalreloaded.access.EntityPlaneGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.Plane;
-import github.amvern.twodimensionalreloaded.utils.PlanePersistentState;
+import github.amvern.twodimensionalreloaded.utils.PlaneAttachment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,19 +24,22 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
     private Plane twoDimensional$plane = null;
 
     @Override
-    @Nullable
     public Plane twoDimensional$getPlane() {
-        if ((Object)this instanceof ServerPlayer player) {
-            return PlanePersistentState.getPlayerPlane(player);
+        if ((Object)this instanceof Player player) {
+            return PlaneAttachment.get(player);
         }
-
         return twoDimensional$plane;
     }
 
     @Override
     public void twoDimensional$setPlane(Plane plane) {
-        this.twoDimensional$plane = plane;
+        if ((Object)this instanceof Player player) {
+            PlaneAttachment.set(player, plane);
+        } else {
+            this.twoDimensional$plane = plane;
+        }
     }
+
     @Shadow public abstract void setDeltaMovement(Vec3 velocity);
 
     @Shadow public abstract Vec3 getDeltaMovement();
@@ -92,7 +96,7 @@ public abstract class EntityMixin implements EntityPlaneGetterSetter {
         }
     }
 
-    @Inject(method = "absMoveTo(DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V"))
+    @Inject(method = "absSnapTo(DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V"))
     private void clampPrevPos(double x, double y, double z, CallbackInfo ci, @Local (ordinal = 0) double d, @Local (ordinal = 1) double e) {
         Plane plane = twoDimensional$getPlane();
         if (plane != null) {

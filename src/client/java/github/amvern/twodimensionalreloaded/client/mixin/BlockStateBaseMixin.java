@@ -6,15 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class BlockStateBaseMixin {
-
-    @Shadow public abstract boolean canOcclude();
 
     @Inject(method = "getShadeBrightness", at = @At("HEAD"), cancellable = true)
     private void getShadeBrightness(BlockGetter world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
@@ -23,15 +20,4 @@ public abstract class BlockStateBaseMixin {
         }
     }
 
-    @Inject(method = "getLightBlock", at = @At("HEAD"), cancellable = true)
-    private void getLightBlock(BlockGetter world, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (Plane.shouldCull(pos, plane)) {
-            if (this.canOcclude()) {
-                cir.setReturnValue(1);
-            } else {
-                cir.setReturnValue(0);
-            }
-        }
-    }
 }

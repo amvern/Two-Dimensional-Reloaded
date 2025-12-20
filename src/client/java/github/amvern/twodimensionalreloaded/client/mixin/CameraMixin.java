@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,6 +17,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static github.amvern.twodimensionalreloaded.utils.PlaneAttachment.PLAYER_PLANE;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin {
@@ -34,14 +37,14 @@ public abstract class CameraMixin {
     @Shadow protected abstract void move(float x, float y, float z);
 
     @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"), cancellable = true)
-    public void setup(BlockGetter area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    public void setup(Level level, Entity entity, boolean bl, boolean bl2, float tickDelta, CallbackInfo ci) {
         Plane plane = TwoDimensionalReloadedClient.plane;
-        if (plane != null) {
+        if (entity.hasAttached(PLAYER_PLANE)) {
             this.detached = true;
 
             this.setRotation(0f, 0f);
 
-            Vec3 pos = new Vec3(Mth.lerp(tickDelta, focusedEntity.xo, focusedEntity.getX()), Mth.lerp(tickDelta, focusedEntity.yo, focusedEntity.getY()) + focusedEntity.getEyeHeight(), Mth.lerp(tickDelta, focusedEntity.zo, focusedEntity.getZ()));
+            Vec3 pos = new Vec3(Mth.lerp(tickDelta, entity.xo, entity.getX()), Mth.lerp(tickDelta, entity.yo, entity.getY()) + entity.getEyeHeight(), Mth.lerp(tickDelta, entity.zo, entity.getZ()));
             this.setPosition(pos.x, pos.y, pos.z);
 
             MouseNormalizedGetter mouse = (MouseNormalizedGetter) Minecraft.getInstance().mouseHandler;

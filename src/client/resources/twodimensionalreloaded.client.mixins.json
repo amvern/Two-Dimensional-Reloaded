@@ -7,14 +7,14 @@
     "CameraMixin",
     "EntityMixin",
     "GuiMixin",
-    "InputMixin",
+    "ClientInputMixin",
     "LevelRendererMixin",
     "LocalPlayerMixin",
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
     "OptionsMixin",
     "TheEndPortalBlockEntityMixin",
-    "TheEndPortalRendererMixin",
+    "AbstractEndPortalRendererMixin",
     "sodium.DefaultFluidRendererMixin",
     "BlockStateBaseMixin",
     "sodium.SodiumWorldRendererMixin",
@@ -24,7 +24,8 @@
     "sodium.AbstractBlockRenderContextAccessor",
     "ParticleAccessor",
     "ParticleEngineMixin",
-    "sodium.LightDataAccessMixin"
+    "sodium.LightDataAccessMixin",
+    "LightEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

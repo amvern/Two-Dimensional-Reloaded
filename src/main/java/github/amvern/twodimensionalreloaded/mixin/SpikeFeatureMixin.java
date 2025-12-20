@@ -56,7 +56,7 @@ public class SpikeFeatureMixin {
         cir.setReturnValue(spikes);
     }
 
-    @ModifyArgs(method = "placeSpike", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EndCrystal;moveTo(DDDFF)V"), require = 0)
+    @ModifyArgs(method = "placeSpike", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EndCrystal;snapTo(DDDFF)V"), require = 0)
     private void adjustCrystalPos(Args args) {
         args.set(2, (double) args.get(2) + 0.2);
     }

@@ -4,9 +4,8 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.client.access.MouseNormalizedGetter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.Input;
+import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -17,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerMixin extends Entity {
-    @Shadow public Input input;
+    @Shadow public ClientInput input;
 
     @Shadow @Final protected Minecraft minecraft;
 
@@ -25,10 +24,12 @@ public abstract class LocalPlayerMixin extends Entity {
         super(type, world);
     }
 
-    @ModifyReturnValue(method = "hasEnoughImpulseToStartSprinting", at = @At("RETURN"))
+    @ModifyReturnValue(method = "canStartSprinting", at = @At("RETURN"))
     private boolean countSidewaysMovementOnPlane(boolean original) {
         if (TwoDimensionalReloadedClient.plane != null) {
-            return original || this.input.leftImpulse * Mth.sign(((MouseNormalizedGetter) minecraft.mouseHandler).twoDimensional$getNormalizedX()) >= 0.8;
+            double moveX = this.input.getMoveVector().x;
+            double mouseX = ((MouseNormalizedGetter) minecraft.mouseHandler).twoDimensional$getNormalizedX();
+            return original || moveX * Math.signum(mouseX) >= 0.8;
         }
 
         return original;
