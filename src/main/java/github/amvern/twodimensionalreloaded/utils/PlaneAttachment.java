@@ -2,10 +2,7 @@ package github.amvern.twodimensionalreloaded.utils;
 
 import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
@@ -21,7 +18,6 @@ public class PlaneAttachment {
                     .copyOnDeath()
     );
 
-    // Helper methods
     public static Plane get(Player player) {
         return player.getAttachedOrSet(PLAYER_PLANE, new Plane());
     }

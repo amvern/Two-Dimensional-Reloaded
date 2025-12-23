@@ -3,8 +3,6 @@ package github.amvern.twodimensionalreloaded.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;

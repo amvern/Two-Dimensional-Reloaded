@@ -26,16 +26,14 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        // Start-of-tick: ensure the player has a plane attached
+
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player != null) {
-                // Attach a plane if it doesn't exist yet
                 PlaneAttachment.get(client.player);
                 plane = PlaneAttachment.get(client.player);
             }
         });
 
-        // End-of-tick: handle input for layer mode
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.level == null || client.getConnection() == null) return;
 
@@ -43,7 +41,6 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
 
             if (mode != lastMode) {
                 lastMode = mode;
-                // Send to server
                 ClientPlayNetworking.send(new InteractionLayerPayload(mode));
             }
         });

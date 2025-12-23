@@ -26,17 +26,17 @@ public class LiquidBlockRendererMixin {
         }
     }
 
-    @Inject(method = "shouldRenderFace", at = @At("HEAD"), cancellable = true)
-    private static void enableCulledFluidSide(BlockAndTintGetter world, BlockPos pos, FluidState fluidState, BlockState blockState, Direction direction, FluidState neighborFluidState, CallbackInfoReturnable<Boolean> cir) {
-        if (Plane.shouldCull(pos.relative(direction), TwoDimensionalReloadedClient.plane)) {
-            cir.setReturnValue(true);
-        }
-    }
-//Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;isFaceOccludedByState(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/Direction;FLnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z
-    @Inject(method = "isFaceOccludedByState", at = @At("HEAD"), cancellable = true)
-    private static void enableCulledSides(BlockGetter world, Direction direction, float height, BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        if (Plane.shouldCull(pos.relative(direction), TwoDimensionalReloadedClient.plane)) {
-            cir.setReturnValue(false);
-        }
-    }
+//    @Inject(method = "shouldRenderFace", at = @At("HEAD"), cancellable = true)
+//    private static void enableCulledFluidSide(FluidState fluidState, BlockState blockState, Direction direction, FluidState fluidState2, CallbackInfoReturnable<Boolean> cir) {
+//        if (Plane.shouldCull(pos.relative(direction), TwoDimensionalReloadedClient.plane)) {
+//            cir.setReturnValue(true);
+//        }
+//    }
+//
+//    @Inject(method = "isFaceOccludedByState", at = @At("HEAD"), cancellable = true)
+//    private static void enableCulledSides(Direction direction, float f, BlockState blockState, CallbackInfoReturnable<Boolean> cir) {
+//        if (Plane.shouldCull(pos.relative(direction), TwoDimensionalReloadedClient.plane)) {
+//            cir.setReturnValue(false);
+//        }
+//    }
 }
