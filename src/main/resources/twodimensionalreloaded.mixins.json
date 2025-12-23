@@ -19,8 +19,8 @@
     "PortalForcerAccessor",
     "NetherFortressStartPieceMixin",
     "StructurePlacementMixin",
-    "PlayerSpawnFinderMixin",
-    "ServerExplosionMixin"
+    "ServerExplosionMixin",
+    "PlayerSpawnFinderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

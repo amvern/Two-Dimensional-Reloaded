@@ -15,18 +15,19 @@
     "OptionsMixin",
     "TheEndPortalBlockEntityMixin",
     "AbstractEndPortalRendererMixin",
-    "sodium.DefaultFluidRendererMixin",
     "BlockStateBaseMixin",
+    "ParticleAccessor",
+    "ParticleEngineMixin",
+    "LightEngineMixin",
+    "LevelChunkMixin",
+
+    "sodium.LightDataAccessMixin",
+    "sodium.AbstractBlockRenderContextAccessor",
     "sodium.SodiumWorldRendererMixin",
     "sodium.SodiumWorldRendererAccessor",
     "sodium.BlockOcclusionCacheMixin",
     "sodium.BlockRendererMixin",
-    "sodium.AbstractBlockRenderContextAccessor",
-    "ParticleAccessor",
-    "ParticleEngineMixin",
-    "sodium.LightDataAccessMixin",
-    "LightEngineMixin",
-    "LevelChunkMixin"
+    "sodium.DefaultFluidRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
