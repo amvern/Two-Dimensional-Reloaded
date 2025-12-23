@@ -44,5 +44,4 @@ public class Plane {
     public String toString() {
         return "Plane{z= " + z + " }";
     }
-
 }

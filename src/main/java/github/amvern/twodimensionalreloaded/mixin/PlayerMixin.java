@@ -4,6 +4,7 @@ import github.amvern.twodimensionalreloaded.access.EntityPlaneGetterSetter;
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
+import github.amvern.twodimensionalreloaded.utils.PlaneAttachment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -52,7 +53,7 @@ public abstract class PlayerMixin extends LivingEntity {
                 EntityPlaneGetterSetter entityPlane = (EntityPlaneGetterSetter) entity;
                 if (entityPlane.twoDimensional$getPlane() == null && !(entity instanceof Player)) {
                     entityPlane.twoDimensional$setPlane(plane);
-                    plane.containedEntities.add(entity);
+                    PlaneAttachment.set(entity, plane);
                 }
             });
         }
