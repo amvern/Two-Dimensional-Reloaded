@@ -25,7 +25,8 @@
     "ParticleAccessor",
     "ParticleEngineMixin",
     "sodium.LightDataAccessMixin",
-    "LightEngineMixin"
+    "LightEngineMixin",
+    "LevelChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -40,19 +40,6 @@ public abstract class ServerPlayerMixin extends Player implements InteractionLay
         }
     }
 
-    //TODO: adjustSpawnLocation
-//    @ModifyArgs(method = "adjustSpawnLocation", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/PlayerRespawnLogic;getOverworldRespawnPos(Lnet/minecraft/server/level/ServerLevel;II)Lnet/minecraft/core/BlockPos;"))
-//    private void clampSpawnXZ(Args args) {
-//        Plane plane = ((EntityPlaneGetterSetter) this).twoDimensional$getPlane();
-//        if (plane != null) {
-//            int x = args.get(1);
-//            int z = args.get(2);
-//            Vec3 intersectPoint = plane.intersectPoint(new Vec3(x, 0, z));
-//            args.set(1, (int) intersectPoint.x);
-//            args.set(2, (int) intersectPoint.z);
-//        }
-//    }
-
     @Override
     public void setInteractionLayer(LayerMode mode) {
         this.currentLayer = mode;
