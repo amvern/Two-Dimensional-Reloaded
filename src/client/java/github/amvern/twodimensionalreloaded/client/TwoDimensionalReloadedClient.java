@@ -21,7 +21,7 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
     public static KeyMapping faceAway = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "key.twodimensionalreloaded.face_away",
             GLFW.GLFW_KEY_B,
-            new KeyMapping.Category(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "twodimensionalreloaded"))
+            new KeyMapping.Category(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "utility"))
     ));
 
     @Override
