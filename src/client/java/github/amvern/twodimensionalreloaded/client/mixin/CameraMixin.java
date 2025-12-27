@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static github.amvern.twodimensionalreloaded.utils.PlaneAttachment.Plane;
+import static github.amvern.twodimensionalreloaded.utils.PlaneAttachment.ENTITY_PLANE;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin {
@@ -38,7 +38,7 @@ public abstract class CameraMixin {
     @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"), cancellable = true)
     public void setup(Level level, Entity entity, boolean bl, boolean bl2, float tickDelta, CallbackInfo ci) {
         Plane plane = TwoDimensionalReloadedClient.plane;
-        if (entity.hasAttached(Plane)) {
+        if (entity.hasAttached(ENTITY_PLANE)) {
             this.detached = true;
 
             this.setRotation(0f, 0f);

@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 public class PlaneAttachment {
-    public static final AttachmentType<Plane> Plane = AttachmentRegistry.create(
+    public static final AttachmentType<Plane> ENTITY_PLANE = AttachmentRegistry.create(
             Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "plane"),
             builder -> builder
                     .initializer(() -> new Plane())
@@ -19,10 +19,10 @@ public class PlaneAttachment {
     );
 
     public static Plane get(Entity entity) {
-        return entity.getAttachedOrSet(Plane, new Plane());
+        return entity.getAttachedOrSet(ENTITY_PLANE, new Plane());
     }
 
     public static void set(Entity entity, Plane plane) {
-        entity.setAttached(Plane, plane);
+        entity.setAttached(ENTITY_PLANE, plane);
     }
 }

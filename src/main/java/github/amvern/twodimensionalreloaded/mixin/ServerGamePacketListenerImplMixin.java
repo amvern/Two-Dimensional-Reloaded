@@ -2,8 +2,6 @@ package github.amvern.twodimensionalreloaded.mixin;
 
 import github.amvern.twodimensionalreloaded.access.EntityPlaneGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.Plane;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Relative;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,7 +21,7 @@ public class ServerGamePacketListenerImplMixin {
     Vec3 TwoDimensional$intersectPoint;
 
     // this is kinda jank
-    @Inject(method = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;teleport(DDDFF)V", at = @At("HEAD"))
+    @Inject(method = "teleport(DDDFF)V", at = @At("HEAD"))
     private void clampInput(double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
         Plane plane = ((EntityPlaneGetterSetter) this.player).twoDimensional$getPlane();
         if (plane != null) {
@@ -33,12 +31,12 @@ public class ServerGamePacketListenerImplMixin {
         }
     }
 
-    @ModifyVariable(method = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;teleport(DDDFF)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = "teleport(DDDFF)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private double clampX(double x) {
         return TwoDimensional$intersectPoint.x;
     }
 
-    @ModifyVariable(method = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;teleport(DDDFF)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
+    @ModifyVariable(method = "teleport(DDDFF)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
     private double clampZ(double Z) {
         return TwoDimensional$intersectPoint.z;
     }

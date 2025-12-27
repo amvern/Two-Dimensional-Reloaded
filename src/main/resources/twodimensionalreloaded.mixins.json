@@ -20,7 +20,8 @@
     "NetherFortressStartPieceMixin",
     "StructurePlacementMixin",
     "ServerExplosionMixin",
-    "PlayerSpawnFinderMixin"
+    "PlayerSpawnFinderMixin",
+    "ServerPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
