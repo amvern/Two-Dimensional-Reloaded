@@ -20,7 +20,7 @@ public class LevelRendererMixin {
     private void disableCulledBlockOutline(PoseStack poseStack, VertexConsumer vertexConsumer, double d, double e, double f, BlockOutlineRenderState blockOutlineRenderState, int i, float g, CallbackInfo ci) {
         BlockPos blockPos = blockOutlineRenderState.pos();
 
-        if (Plane.shouldCull(blockPos, TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(blockPos, TwoDimensionalReloadedClient.plane) || blockPos.getZ() > 1) {
             ci.cancel();
         }
     }
