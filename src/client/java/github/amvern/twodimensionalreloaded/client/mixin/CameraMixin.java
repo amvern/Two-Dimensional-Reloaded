@@ -37,7 +37,6 @@ public abstract class CameraMixin {
 
     @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"), cancellable = true)
     public void setup(Level level, Entity entity, boolean bl, boolean bl2, float tickDelta, CallbackInfo ci) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
         if (entity.hasAttached(ENTITY_PLANE)) {
             this.detached = true;
 

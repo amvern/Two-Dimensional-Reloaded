@@ -5,7 +5,11 @@
   "name": "Two Dimensional: Reloaded",
   "description": "Turns Minecraft into a 2D side-scroller",
   "authors": ["amvern"],
-  "contact": {},
+  "contact": {
+    "homepage": "https://github.com/amvern/Two-Dimensional-Reloaded",
+    "sources": "https://github.com/amvern/Two-Dimensional-Reloaded",
+    "issues": "https://github.com/amvern/Two-Dimensional-Reloaded/issues"
+  },
   "license": "MIT",
   "icon": "assets/twodimensionalreloaded/icon.png",
   "environment": "*",
@@ -15,7 +19,17 @@
     ],
     "main": [
       "github.amvern.twodimensionalreloaded.TwoDimensionalReloaded"
+    ],
+    "modmenu": [
+      "github.amvern.twodimensionalreloaded.client.config.ModMenuImpl"
     ]
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github_releases": "https://github.com/amvern/Two-Dimensional-Reloaded/releases"
+      }
+    }
   },
   "mixins": [
     "twodimensionalreloaded.mixins.json",

@@ -1,11 +1,13 @@
 package github.amvern.twodimensionalreloaded.client;
 
 import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
-import github.amvern.twodimensionalreloaded.access.EntityPlaneGetterSetter;
+import github.amvern.twodimensionalreloaded.client.config.ClientConfig;
 import github.amvern.twodimensionalreloaded.network.InteractionLayerPayload;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import github.amvern.twodimensionalreloaded.utils.PlaneAttachment;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -24,13 +26,18 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
             new KeyMapping.Category(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "utility"))
     ));
 
+    public static ClientConfig CONFIG;
+
     @Override
     public void onInitializeClient() {
+        AutoConfig.register(ClientConfig.class, GsonConfigSerializer::new);
+        CONFIG = AutoConfig.getConfigHolder(ClientConfig.class).getConfig();
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (client.player != null) {
+            if (client.player != null && plane == null) {
                 PlaneAttachment.get(client.player);
                 plane = PlaneAttachment.get(client.player);
+                client.levelRenderer.allChanged();
             }
         });
 
