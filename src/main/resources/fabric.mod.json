@@ -41,6 +41,8 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "${minecraft_version}",
+    "sodium": ">=0.8.0+fabric",
+    "cloth-config": ">=21.11.150+fabric"
   }
 }
