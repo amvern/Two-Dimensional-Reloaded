@@ -21,7 +21,8 @@
     "StructurePlacementMixin",
     "ServerExplosionMixin",
     "PlayerSpawnFinderMixin",
-    "ServerPlayerGameModeMixin"
+    "ServerPlayerGameModeMixin",
+    "EnderDragonMixin"
   ],
   "injectors": {
     "defaultRequire": 1

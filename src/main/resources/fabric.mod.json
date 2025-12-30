@@ -44,5 +44,8 @@
     "minecraft": "${minecraft_version}",
     "sodium": ">=0.8.0+fabric",
     "cloth-config": ">=21.11.150+fabric"
+  },
+  "recommends": {
+    "modmenu": "*"
   }
 }

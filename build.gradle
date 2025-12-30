@@ -102,6 +102,10 @@ jar {
     }
 }
 
+tasks.named("remapJar") {
+    archiveVersion.set("${project.version}+${minecraft_version}")
+}
+
 // configure the maven publication
 publishing {
     publications {
