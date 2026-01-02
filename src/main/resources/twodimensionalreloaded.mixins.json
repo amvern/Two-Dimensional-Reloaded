@@ -22,7 +22,9 @@
     "ServerExplosionMixin",
     "PlayerSpawnFinderMixin",
     "ServerPlayerGameModeMixin",
-    "EnderDragonMixin"
+    "MultiTargetTickMixin",
+    "AbstractBoatMixin",
+    "AbstractHorseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

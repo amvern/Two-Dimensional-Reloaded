@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 
 public class TwoDimensionalReloaded implements ModInitializer {
-    public static final String MOD_ID = "two_dimensional_reloaded";
+    public static final String MOD_ID = "twodimensionalreloaded";
     public static final Logger LOGGER = Logger.getLogger(MOD_ID);
 
     public static void setPlayerPlane(MinecraftServer server, ServerPlayer player) {
@@ -37,6 +37,8 @@ public class TwoDimensionalReloaded implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ModBlocks.initialize();
+
         PayloadTypeRegistry.playC2S().register(
                 InteractionLayerPayload.TYPE,
                 InteractionLayerPayload.CODEC
