@@ -5,9 +5,12 @@ import github.amvern.twodimensionalreloaded.client.access.MouseNormalizedGetter;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -62,6 +65,7 @@ public abstract class EntityMixin {
     @Inject(method = "shouldRender(DDD)Z", at = @At("HEAD"), cancellable = true)
     public void disableRenderingOutsidePlane(CallbackInfoReturnable<Boolean> cir) {
         if ((Object)this instanceof EnderDragon) return;
+        if ((Object)this instanceof Player) return;
         cir.setReturnValue(!Plane.shouldCull(this.blockPosition(), TwoDimensionalReloadedClient.plane));
     }
 }
