@@ -20,6 +20,9 @@
     "ParticleEngineMixin",
     "LightEngineMixin",
     "LevelChunkMixin",
+    "LavaFogEnvironmentMixin",
+    "PowderedSnowFogEnvironmentMixin",
+    "ScreenEffectRendererMixin",
 
     "sodium.LightDataAccessMixin",
     "sodium.AbstractBlockRenderContextAccessor",
