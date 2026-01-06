@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayerGameMode.class)
 public class ServerPlayerGameModeMixin {
-
     @Shadow @Final protected ServerPlayer player;
 
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
@@ -32,7 +31,7 @@ public class ServerPlayerGameModeMixin {
 
             boolean cancel = switch (mode) {
                 case BASE -> !isOnPlane;
-                case FACE_AWAY -> Plane.shouldCull(blockHitResult.getBlockPos()) || dist >= 1.8 || isOnPlane;
+                case FACE_AWAY -> Plane.shouldCull(blockHitResult.getBlockPos()) || dist >= 1.8;
             };
 
             if (cancel) cir.setReturnValue(InteractionResult.FAIL);

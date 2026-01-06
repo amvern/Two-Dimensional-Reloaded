@@ -25,7 +25,7 @@ public class MultiPlayerGameModeMixin {
 
             boolean cancel = switch (mode) {
                 case BASE -> !isOnPlane;
-                case FACE_AWAY -> Plane.shouldCull(hitResult.getBlockPos()) || dist >= 1.8 || isOnPlane;
+                case FACE_AWAY -> Plane.shouldCull(hitResult.getBlockPos()) || dist >= 1.8;
             };
 
             if (cancel) cir.setReturnValue(InteractionResult.FAIL);
