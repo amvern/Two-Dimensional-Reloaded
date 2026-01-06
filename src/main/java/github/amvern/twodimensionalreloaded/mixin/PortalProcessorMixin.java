@@ -15,9 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(PortalProcessor.class)
 public abstract class PortalProcessorMixin {
-
     @Shadow public abstract void setAsInsidePortalThisTick(boolean bl);
-
     @Shadow public abstract BlockPos getEntryPosition();
 
     @Inject(method = "processPortalTeleportation", at = @At("HEAD"))

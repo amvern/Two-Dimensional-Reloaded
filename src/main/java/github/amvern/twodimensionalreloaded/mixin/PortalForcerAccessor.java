@@ -10,4 +10,3 @@ public interface PortalForcerAccessor {
     @Accessor("level")
     ServerLevel getLevel();
 }
-

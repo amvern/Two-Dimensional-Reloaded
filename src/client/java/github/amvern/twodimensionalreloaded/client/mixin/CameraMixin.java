@@ -21,8 +21,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static github.amvern.twodimensionalreloaded.utils.PlaneAttachment.ENTITY_PLANE;
-
 @Mixin(Camera.class)
 public abstract class CameraMixin {
     @Unique double twoDimensional$xMouseOffset = 0;
@@ -38,26 +36,24 @@ public abstract class CameraMixin {
 
     @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"), cancellable = true)
     public void setup(Level level, Entity entity, boolean bl, boolean bl2, float tickDelta, CallbackInfo ci) {
-        if (entity.hasAttached(ENTITY_PLANE)) {
-            this.detached = true;
+        this.detached = true;
 
-            this.setRotation(0f, 0f);
+        this.setRotation(0f, 0f);
 
-            Vec3 pos = new Vec3(Mth.lerp(tickDelta, entity.xo, entity.getX()), Mth.lerp(tickDelta, entity.yo, entity.getY()) + entity.getEyeHeight(), Mth.lerp(tickDelta, entity.zo, entity.getZ()));
-            this.setPosition(pos.x, pos.y, pos.z);
+        Vec3 pos = new Vec3(Mth.lerp(tickDelta, entity.xo, entity.getX()), Mth.lerp(tickDelta, entity.yo, entity.getY()) + entity.getEyeHeight(), Mth.lerp(tickDelta, entity.zo, entity.getZ()));
+        this.setPosition(pos.x, pos.y, pos.z);
 
-            MouseNormalizedGetter mouse = (MouseNormalizedGetter) Minecraft.getInstance().mouseHandler;
+        MouseNormalizedGetter mouse = (MouseNormalizedGetter) Minecraft.getInstance().mouseHandler;
 
-            float mouseOffsetScale = twoDimensional$getMouseOffsetScale(Minecraft.getInstance().player);
-            double delta = 0.2 - (0.15 * mouseOffsetScale/40);
+        float mouseOffsetScale = twoDimensional$getMouseOffsetScale(Minecraft.getInstance().player);
+        double delta = 0.2 - (0.15 * mouseOffsetScale/40);
 
-            twoDimensional$xMouseOffset = Mth.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
-            twoDimensional$yMouseOffset = Mth.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
+        twoDimensional$xMouseOffset = Mth.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
+        twoDimensional$yMouseOffset = Mth.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
 
-            this.move(-8, (float) twoDimensional$yMouseOffset, (float) -twoDimensional$xMouseOffset);
+        this.move(-8, (float) twoDimensional$yMouseOffset, (float) -twoDimensional$xMouseOffset);
 
-            ci.cancel();
-        }
+        ci.cancel();
     }
 
     @Unique

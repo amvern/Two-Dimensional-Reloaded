@@ -14,7 +14,7 @@ public abstract class BlockStateBaseMixin {
 
     @Inject(method = "getShadeBrightness", at = @At("HEAD"), cancellable = true)
     private void getShadeBrightness(BlockGetter world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        if (Plane.sdf(pos.getCenter()) <= Plane.CULL_DIST){
+        if (Plane.sdf(pos.getCenter()) <= Plane.getCullDist()){
             cir.setReturnValue(1f);
         }
     }

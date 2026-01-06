@@ -24,8 +24,7 @@ public abstract class NetherFortressStartPieceMixin extends NetherFortressPieces
         super(i, boundingBox, direction);
     }
 
-    @Shadow @Final
-    public List<StructurePiece> pendingChildren;
+    @Shadow @Final public List<StructurePiece> pendingChildren;
 
     @Inject(method = "<init>(Lnet/minecraft/util/RandomSource;II)V", at = @At("RETURN"))
     private void forceZToZero(RandomSource random, int x, int z, CallbackInfo ci) {
@@ -40,5 +39,3 @@ public abstract class NetherFortressStartPieceMixin extends NetherFortressPieces
         }
     }
 }
-
-

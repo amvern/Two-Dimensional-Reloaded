@@ -1,30 +1,25 @@
 package github.amvern.twodimensionalreloaded.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mojang.serialization.Codec;
+import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
 public class Plane {
-    public static final double CULL_DIST = -0.5;
+    private static final double CULL_DIST = -0.5;
     private static final double z = 0.5;
-    private final Vec3 normal = new Vec3(0, 0, 1);
-
-    public List<Entity> containedEntities = new ArrayList<Entity>();
 
     public Plane() {}
 
-    public double getZ() {
-        return z;
-    }
+    public static double getZ() { return z; }
+    public static double getCullDist() { return CULL_DIST; }
 
-    public Vec3 getNormal() {
-        return normal;
-    }
-
-    public Vec3 intersectPoint(Vec3 point) {
+    public static Vec3 intersectPoint(Vec3 point) {
         return new Vec3(point.x, point.y, z);
     }
 
@@ -41,4 +36,16 @@ public class Plane {
     public String toString() {
         return "Plane{z= " + z + " }";
     }
+
+    public static final AttachmentType<Boolean> PLANE_ENTITY_FLAG = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "isOnPlane"),
+            builder -> builder
+                    .initializer(()-> false)
+                    .persistent(Codec.BOOL)
+                    .syncWith(
+                            ByteBufCodecs.BOOL,
+                            AttachmentSyncPredicate.all()
+                    )
+                    .copyOnDeath()
+    );
 }

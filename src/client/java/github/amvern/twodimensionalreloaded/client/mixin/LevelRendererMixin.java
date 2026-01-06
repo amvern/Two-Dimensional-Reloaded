@@ -31,11 +31,11 @@ public class LevelRendererMixin {
 
     @Inject(method = "renderHitOutline", at = @At("HEAD"), cancellable = true)
     private void renderPlacementOutline(
-            PoseStack poseStack, VertexConsumer vertexConsumer,
-            double cameraX, double cameraY, double cameraZ,
-            BlockOutlineRenderState blockOutlineRenderState,
-            int color, float alpha,
-            CallbackInfo ci
+        PoseStack poseStack, VertexConsumer vertexConsumer,
+        double cameraX, double cameraY, double cameraZ,
+        BlockOutlineRenderState blockOutlineRenderState,
+        int color, float alpha,
+        CallbackInfo ci
     ) {
         BlockPos targetPos = blockOutlineRenderState.pos();
         if (Plane.shouldCull(targetPos) || targetPos.getZ() > 1) {
@@ -55,9 +55,7 @@ public class LevelRendererMixin {
 
             BlockItem blockItem = (BlockItem) stack.getItem();
             Block block = blockItem.getBlock();
-
             Level level = player.level();
-
 
             BlockPlaceContext context = new BlockPlaceContext(level, player, InteractionHand.MAIN_HAND, stack, hitResult);
             BlockState stateToPlace = block.getStateForPlacement(context);
@@ -67,8 +65,8 @@ public class LevelRendererMixin {
             BlockState clickedState = level.getBlockState(clickedPos);
 
             BlockPos placePos = clickedState.canBeReplaced(context)
-                    ? clickedPos
-                    : clickedPos.relative(hitResult.getDirection());
+                ? clickedPos
+                : clickedPos.relative(hitResult.getDirection());
 
             VoxelShape shape = stateToPlace.getShape(level, placePos);
             BlockState worldState = level.getBlockState(placePos);
@@ -82,18 +80,17 @@ public class LevelRendererMixin {
             int outlineColor = placeable ? TwoDimensionalReloadedClient.CONFIG.placeableOutlineColor : TwoDimensionalReloadedClient.CONFIG.nonPlaceableOutlineColor;
 
             ShapeRenderer.renderShape(
-                    poseStack,
-                    vertexConsumer,
-                    shape,
-                    placePos.getX() - cameraX,
-                    placePos.getY() - cameraY,
-                    placePos.getZ() - cameraZ,
-                    outlineColor,
-                    alpha
+                poseStack,
+                vertexConsumer,
+                shape,
+            placePos.getX() - cameraX,
+            placePos.getY() - cameraY,
+            placePos.getZ() - cameraZ,
+                outlineColor,
+                alpha
             );
         }
 
        // ci.cancel();
     }
-
 }

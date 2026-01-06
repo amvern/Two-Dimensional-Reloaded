@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * */
 @Mixin(LightEngine.class)
 public abstract class LightEngineMixin {
-
     @Unique
     private static final ThreadLocal<BlockPos> twoDimensionalReloaded$LIGHT_POS =  new ThreadLocal<>();
 
@@ -37,9 +35,6 @@ public abstract class LightEngineMixin {
 
     @Inject(method = "getOpacity", at = @At("HEAD"), cancellable = true)
     private void setCulledOpacity(BlockState state, CallbackInfoReturnable<Integer> cir) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (plane == null) return;
-
         BlockPos pos = twoDimensionalReloaded$getLightPos();
         if (pos != null && Plane.shouldCull(pos)) {
             cir.setReturnValue(state.canOcclude() ? 1 : 0);

@@ -22,7 +22,6 @@ import java.util.function.Consumer;
  * */
 @Mixin(NetherPortalBlock.class)
 public abstract class NetherPortalBlockMixin extends Block {
-
     @Shadow protected abstract void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier insideBlockEffectApplier, boolean bl);
 
     public NetherPortalBlockMixin(Properties properties) {
@@ -54,8 +53,3 @@ public abstract class NetherPortalBlockMixin extends Block {
         return InteractionResult.SUCCESS;
     }
 }
-
-
-
-
-

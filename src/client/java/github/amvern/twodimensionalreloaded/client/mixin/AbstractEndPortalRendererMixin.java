@@ -24,7 +24,6 @@ import java.util.EnumSet;
  */
 @Mixin(AbstractEndPortalRenderer.class)
 public abstract class AbstractEndPortalRendererMixin<T extends TheEndPortalBlockEntity, S extends EndPortalRenderState> implements BlockEntityRenderer<T, S> {
-
     @Shadow abstract protected float getOffsetUp();
     @Shadow abstract protected float getOffsetDown();
     @Shadow protected abstract void renderFace(EnumSet<Direction> enumSet, Matrix4f matrix4f, VertexConsumer vertexConsumer, float f, float g, float h, float i, float j, float k, float l, float m, Direction direction);
@@ -50,5 +49,3 @@ public abstract class AbstractEndPortalRendererMixin<T extends TheEndPortalBlock
         ci.cancel();
     }
 }
-
-

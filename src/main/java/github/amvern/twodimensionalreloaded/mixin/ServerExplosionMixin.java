@@ -22,4 +22,3 @@ public class ServerExplosionMixin {
         cir.setReturnValue(filtered);
     }
 }
-

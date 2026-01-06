@@ -13,18 +13,18 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class LevelChunkMixin {
 
     @Redirect(
-            method = "setBlockState",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/lighting/LightEngine;hasDifferentLightProperties(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)Z"
-            )
+        method = "setBlockState",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/lighting/LightEngine;hasDifferentLightProperties(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)Z"
+        )
     )
     private boolean twoDimensionalReloaded$hasDifferentLightPropertiesWithPos(
-            BlockState oldState,
-            BlockState newState,
-            BlockPos pos,
-            BlockState state,
-            int flags
+        BlockState oldState,
+        BlockState newState,
+        BlockPos pos,
+        BlockState state,
+        int flags
     ) {
         if (Plane.shouldCull(pos)) {
             return false;
@@ -33,4 +33,3 @@ public abstract class LevelChunkMixin {
         return LightEngine.hasDifferentLightProperties(oldState, newState);
     }
 }
-

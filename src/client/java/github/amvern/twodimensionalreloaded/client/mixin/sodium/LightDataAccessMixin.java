@@ -13,13 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-
 /***
  * Mixin to effectively omit culled blocks from lighting calculations
  */
 @Mixin(LightDataAccess.class)
 public abstract class LightDataAccessMixin {
-
     @Shadow protected BlockAndTintGetter level;
     @Shadow @Final private BlockPos.MutableBlockPos pos;
 
@@ -36,18 +34,15 @@ public abstract class LightDataAccessMixin {
         int sl = LightTexture.sky(light);
 
         int packedLightData  =
-                LightDataAccess.packFC(false) |
-                LightDataAccess.packFO(false) |
-                LightDataAccess.packOP(false) |
-                LightDataAccess.packEM(false) |
-                LightDataAccess.packAO(1.0f) |
-                LightDataAccess.packLU(0) |
-                LightDataAccess.packSL(sl) |
-                LightDataAccess.packBL(bl);
+            LightDataAccess.packFC(false) |
+            LightDataAccess.packFO(false) |
+            LightDataAccess.packOP(false) |
+            LightDataAccess.packEM(false) |
+            LightDataAccess.packAO(1.0f) |
+            LightDataAccess.packLU(0) |
+            LightDataAccess.packSL(sl) |
+            LightDataAccess.packBL(bl);
 
         cir.setReturnValue(packedLightData);
     }
 }
-
-
-

@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
  * */
 @Mixin(ChunkGeneratorStructureState.class)
 public abstract class ChunkGeneratorStructureStateMixin {
-
     @Shadow @Final private Map<ConcentricRingsStructurePlacement, CompletableFuture<List<ChunkPos>>> ringPositions;
 
     @Inject(method = "generateRingPositions", at = @At("HEAD"), cancellable = true)
@@ -51,7 +50,3 @@ public abstract class ChunkGeneratorStructureStateMixin {
         cir.setReturnValue(CompletableFuture.completedFuture(positions));
     }
 }
-
-
-
-

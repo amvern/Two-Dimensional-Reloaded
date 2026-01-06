@@ -20,9 +20,3 @@ public abstract class StrongholdPiecesStartPieceMixin {
         ((StructurePieceInvoker) this).callSetOrientation(facing);
     }
 }
-
-
-
-
-
-

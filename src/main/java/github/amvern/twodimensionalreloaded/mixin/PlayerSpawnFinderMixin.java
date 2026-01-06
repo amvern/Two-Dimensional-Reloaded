@@ -27,4 +27,3 @@ public abstract class PlayerSpawnFinderMixin {
         return new BlockPos(original.getX(), original.getY(), 0);
     }
 }
-

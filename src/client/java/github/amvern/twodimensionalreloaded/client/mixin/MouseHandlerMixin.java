@@ -23,10 +23,8 @@ public class MouseHandlerMixin implements MouseNormalizedGetter {
     @Shadow @Final private Minecraft minecraft;
     @Shadow private double xpos;
     @Shadow private double ypos;
-    @Unique
-    private Double twoDimensional$normalizedX = 0d;
-    @Unique
-    private Double twoDimensional$normalizedY = 0d;
+    @Unique private Double twoDimensional$normalizedX = 0d;
+    @Unique private Double twoDimensional$normalizedY = 0d;
 
     @Override
     public double twoDimensional$getNormalizedX() {
@@ -57,11 +55,8 @@ public class MouseHandlerMixin implements MouseNormalizedGetter {
 
     @WrapWithCondition(method = "grabMouse", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/InputConstants;grabOrReleaseMouse(Lcom/mojang/blaze3d/platform/Window;IDD)V"))
     public boolean grabMouse(Window window, int i, double x, double y) {
-        if (TwoDimensionalReloadedClient.plane != null) {
-            InputConstants.grabOrReleaseMouse(window, GLFW.GLFW_CURSOR_HIDDEN, x, y);
-            return false;
-        }
+        InputConstants.grabOrReleaseMouse(window, GLFW.GLFW_CURSOR_HIDDEN, x, y);
+        return false;
 
-        return true;
     }
 }

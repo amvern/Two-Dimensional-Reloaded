@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class StrongholdPiecesPortalRoomMixin {
 
     @Inject(
-            method = "<init>(ILnet/minecraft/world/level/levelgen/structure/BoundingBox;Lnet/minecraft/core/Direction;)V",
-            at = @At("RETURN")
+        method = "<init>(ILnet/minecraft/world/level/levelgen/structure/BoundingBox;Lnet/minecraft/core/Direction;)V",
+        at = @At("RETURN")
     )
     private void centerPortalRoomZ0(int i, BoundingBox box, Direction direction, CallbackInfo ci) {
         int roomZLength = box.getZSpan();
@@ -26,8 +26,3 @@ public class StrongholdPiecesPortalRoomMixin {
         box.move(0, 0, shiftZ);
     }
 }
-
-
-
-
-

@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
-import github.amvern.twodimensionalreloaded.access.EntityPlaneGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,12 +22,7 @@ public class ServerGamePacketListenerImplMixin {
     // this is kinda jank
     @Inject(method = "teleport(DDDFF)V", at = @At("HEAD"))
     private void clampInput(double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
-        Plane plane = ((EntityPlaneGetterSetter) this.player).twoDimensional$getPlane();
-        if (plane != null) {
-            TwoDimensional$intersectPoint = plane.intersectPoint(new Vec3(x, y, z));
-        } else {
-            TwoDimensional$intersectPoint = new Vec3(x, y, z);
-        }
+        TwoDimensional$intersectPoint = Plane.intersectPoint(new Vec3(x, y, z));
     }
 
     @ModifyVariable(method = "teleport(DDDFF)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)

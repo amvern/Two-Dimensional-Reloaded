@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
@@ -14,12 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ParticleEngineMixin {
 
     @Inject(method = "add(Lnet/minecraft/client/particle/Particle;)V",
-            at = @At("HEAD"),
-            cancellable = true)
+        at = @At("HEAD"),
+        cancellable = true)
     private void cullParticle(Particle particle, CallbackInfo ci) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (plane == null) return;
-
         ParticleAccessor accessor = (ParticleAccessor) particle;
         BlockPos pos = new BlockPos((int) accessor.getX(), (int) accessor.getY(), (int) accessor.getZ());
 
@@ -28,7 +24,3 @@ public class ParticleEngineMixin {
         }
     }
 }
-
-
-
-

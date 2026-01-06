@@ -27,17 +27,17 @@ public class DefaultFluidRendererMixin {
      */
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void cullFluids(
-            LevelSlice level,
-            BlockState blockState,
-            FluidState fluidState,
-            BlockPos blockPos,
-            BlockPos offset,
-            TranslucentGeometryCollector collector,
-            ChunkModelBuilder meshBuilder,
-            Material material,
-            ColorProvider<FluidState> colorProvider,
-            TextureAtlasSprite[] sprites,
-            CallbackInfo ci
+        LevelSlice level,
+        BlockState blockState,
+        FluidState fluidState,
+        BlockPos blockPos,
+        BlockPos offset,
+        TranslucentGeometryCollector collector,
+        ChunkModelBuilder meshBuilder,
+        Material material,
+        ColorProvider<FluidState> colorProvider,
+        TextureAtlasSprite[] sprites,
+        CallbackInfo ci
     ) {
         if (Plane.shouldCull(blockPos)) {
             ci.cancel();
@@ -49,11 +49,11 @@ public class DefaultFluidRendererMixin {
      */
     @Inject(method = "isSideExposed", at = @At("HEAD"), cancellable = true)
     private void enableCulledFluidSide(
-            BlockAndTintGetter world,
-            int x, int y, int z,
-            Direction dir,
-            float height,
-            CallbackInfoReturnable<Boolean> cir
+        BlockAndTintGetter world,
+        int x, int y, int z,
+        Direction dir,
+        float height,
+        CallbackInfoReturnable<Boolean> cir
     ) {
         BlockPos pos = new BlockPos(x, y, z).relative(dir);
         if (Plane.shouldCull(pos)) {
@@ -66,12 +66,12 @@ public class DefaultFluidRendererMixin {
      */
     @Inject(method = "isFullBlockFluidOccluded", at = @At("HEAD"), cancellable = true)
     private void enableCulledSides(
-            BlockAndTintGetter world,
-            BlockPos pos,
-            Direction dir,
-            BlockState blockState,
-            FluidState fluid,
-            CallbackInfoReturnable<Boolean> cir
+        BlockAndTintGetter world,
+        BlockPos pos,
+        Direction dir,
+        BlockState blockState,
+        FluidState fluid,
+        CallbackInfoReturnable<Boolean> cir
     ) {
         if (Plane.shouldCull(pos.relative(dir))) {
             cir.setReturnValue(false);

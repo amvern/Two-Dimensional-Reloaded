@@ -1,7 +1,6 @@
 package github.amvern.twodimensionalreloaded.client.mixin.sodium;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
@@ -21,9 +20,9 @@ import java.util.function.Consumer;
 public class SodiumWorldRendererMixin {
 
     @Inject(
-            method = "extractBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/Camera;FLit/unimi/dsi/fastutil/longs/Long2ObjectMap;Lnet/minecraft/client/renderer/state/LevelRenderState;)V",
-            at = @At("HEAD"),
-            cancellable = true
+        method = "extractBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/Camera;FLit/unimi/dsi/fastutil/longs/Long2ObjectMap;Lnet/minecraft/client/renderer/state/LevelRenderState;)V",
+        at = @At("HEAD"),
+        cancellable = true
     )
     private void cullExtractBlockEntity(BlockEntity blockEntity, PoseStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockDestructionProgress>> progression, LevelRenderState levelRenderState, CallbackInfo ci) {
         if(Plane.shouldCull(blockEntity.getBlockPos())) {

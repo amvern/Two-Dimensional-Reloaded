@@ -8,7 +8,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 public record InteractionLayerPayload(LayerMode mode) implements CustomPacketPayload {
-
     public static final Type<InteractionLayerPayload> TYPE =
             new Type<>(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "interaction_layer"));
 

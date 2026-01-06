@@ -19,14 +19,14 @@ public class BlockOcclusionCacheMixin {
      * */
     @Inject(method = "shouldDrawSide", at = @At("HEAD"), cancellable = true)
     private void cullPlane(BlockState selfState, BlockGetter view, BlockPos selfPos, Direction facing, CallbackInfoReturnable<Boolean> cir) {
-            double dist = Plane.sdf(selfPos.getCenter());
+        double dist = Plane.sdf(selfPos.getCenter());
 
-            if (dist <= Plane.CULL_DIST) {
-                cir.setReturnValue(false);
-            } else if (dist <= 0.5) {
-                if (facing.getStepY() == 0 && Plane.sdf(selfPos.relative(facing).getCenter()) <= Plane.CULL_DIST) {
-                    cir.setReturnValue(true);
-                }
+        if (dist <= Plane.getCullDist()) {
+            cir.setReturnValue(false);
+        } else if (dist <= 0.5) {
+            if (facing.getStepY() == 0 && Plane.sdf(selfPos.relative(facing).getCenter()) <= Plane.getCullDist()) {
+                cir.setReturnValue(true);
             }
+        }
     }
 }

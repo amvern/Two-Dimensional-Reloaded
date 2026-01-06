@@ -4,20 +4,21 @@ import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import github.amvern.twodimensionalreloaded.client.config.ClientConfig;
 import github.amvern.twodimensionalreloaded.network.InteractionLayerPayload;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
-import github.amvern.twodimensionalreloaded.utils.Plane;
-import github.amvern.twodimensionalreloaded.utils.PlaneAttachment;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
+
 public class TwoDimensionalReloadedClient implements ClientModInitializer {
-    public static Plane plane = null;
     private LayerMode lastMode = LayerMode.BASE;
 
     public static KeyMapping faceAway = KeyBindingHelper.registerKeyBinding(new KeyMapping(
@@ -33,12 +34,10 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
         AutoConfig.register(ClientConfig.class, GsonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(ClientConfig.class).getConfig();
 
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (client.player != null && plane == null) {
-                PlaneAttachment.get(client.player);
-                plane = PlaneAttachment.get(client.player);
-                client.levelRenderer.allChanged();
-            }
+
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client)-> {
+            Minecraft.getInstance().player.setAttached(PLANE_ENTITY_FLAG, true);
+            client.levelRenderer.allChanged();
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

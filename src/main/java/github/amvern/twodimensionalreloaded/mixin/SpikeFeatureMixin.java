@@ -26,7 +26,6 @@ import java.util.Random;
  * */
 @Mixin(SpikeFeature.class)
 public class SpikeFeatureMixin {
-
     private static final int CUSTOM_SPIKE_COUNT = 5;
     private static final int MIN_DISTANCE_FROM_PORTAL = 20;
     private static final int SPIKE_DISTANCE = 35;
@@ -77,11 +76,3 @@ public class SpikeFeatureMixin {
     }
 
 }
-
-
-
-
-
-
-
-

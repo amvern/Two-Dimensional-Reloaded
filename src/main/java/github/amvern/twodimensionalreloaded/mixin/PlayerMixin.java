@@ -1,10 +1,10 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
-import github.amvern.twodimensionalreloaded.access.EntityPlaneGetterSetter;
+import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
+import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
-import github.amvern.twodimensionalreloaded.utils.PlaneAttachment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity {
     protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level world) {
@@ -27,11 +28,8 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Inject(method = "blockActionRestricted", at = @At("HEAD"), cancellable = true)
     private void disableBlockBreakingOutsidePlane(Level world, BlockPos pos, GameType gameMode, CallbackInfoReturnable<Boolean> cir) {
-        Plane plane = ((EntityPlaneGetterSetter) this).twoDimensional$getPlane();
-        if (plane == null) return;
-
-        double dist = plane.sdf(pos.getCenter());
-        boolean isOnPlane = pos.getCenter().z == plane.getZ();
+        double dist = Plane.sdf(pos.getCenter());
+        boolean isOnPlane = pos.getCenter().z == Plane.getZ();
 
         if (this instanceof InteractionLayerGetterSetter holder) {
             LayerMode mode = holder.getInteractionLayer();
@@ -47,13 +45,11 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Inject(method = "tick", at =  @At("HEAD"))
     private void updatePlaneContainedEntities(CallbackInfo ci) {
-        Plane plane = ((EntityPlaneGetterSetter) this).twoDimensional$getPlane();
-        if (plane != null && this.tickCount % 20 == 0 && this.level() instanceof ServerLevel world) {
-            world.getEntities(this, AABB.ofSize(position(), 64, 32, 64)).forEach(entity -> {
-                EntityPlaneGetterSetter entityPlane = (EntityPlaneGetterSetter) entity;
-                if (entityPlane.twoDimensional$getPlane() == null && !(entity instanceof Player)) {
-                    entityPlane.twoDimensional$setPlane(plane);
-                    PlaneAttachment.set(entity, plane);
+        if(this.tickCount % 20 == 0 && this.level() instanceof ServerLevel level) {
+            level.getEntities(this, AABB.ofSize(position(), 64, 32, 64)).forEach(entity -> {
+                if(!(entity instanceof Player) && !entity.hasAttached(PLANE_ENTITY_FLAG)) {
+                    entity.setAttached(PLANE_ENTITY_FLAG, true);
+                    TwoDimensionalReloaded.LOGGER.info("ADDING TO PLANE + " + entity.getType());
                 }
             });
         }

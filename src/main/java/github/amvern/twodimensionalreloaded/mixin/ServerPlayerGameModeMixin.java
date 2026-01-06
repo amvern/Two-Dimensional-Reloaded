@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
-import static github.amvern.twodimensionalreloaded.utils.PlaneAttachment.ENTITY_PLANE;
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
@@ -25,11 +24,8 @@ public class ServerPlayerGameModeMixin {
 
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
     private void blockMayUseItemAt(ServerPlayer serverPlayer, Level level, ItemStack itemStack, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
-        Plane plane = this.player.getAttached(ENTITY_PLANE);
-        if (plane == null) return;
-
-        double dist = plane.sdf(blockHitResult.getBlockPos().getCenter());
-        boolean isOnPlane = blockHitResult.getBlockPos().getCenter().z == plane.getZ();
+        double dist = Plane.sdf(blockHitResult.getBlockPos().getCenter());
+        boolean isOnPlane = blockHitResult.getBlockPos().getCenter().z == Plane.getZ();
 
         if(this.player instanceof InteractionLayerGetterSetter holder) {
             LayerMode mode = holder.getInteractionLayer();

@@ -1,7 +1,6 @@
 package github.amvern.twodimensionalreloaded.client.mixin;
 
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -18,11 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MultiPlayerGameModeMixin {
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
     private void disableInteractionOutsidePlane(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (plane == null) return;
-
-        double dist = plane.sdf(hitResult.getBlockPos().getCenter());
-        boolean isOnPlane = hitResult.getBlockPos().getCenter().z == plane.getZ();
+        double dist = Plane.sdf(hitResult.getBlockPos().getCenter());
+        boolean isOnPlane = hitResult.getBlockPos().getCenter().z == Plane.getZ();
 
         if (this instanceof InteractionLayerGetterSetter holder) {
             LayerMode mode = holder.getInteractionLayer();

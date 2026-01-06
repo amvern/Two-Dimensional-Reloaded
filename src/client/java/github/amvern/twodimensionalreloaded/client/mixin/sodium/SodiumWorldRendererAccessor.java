@@ -9,8 +9,6 @@ import java.util.function.Consumer;
 
 @Mixin(SodiumWorldRenderer.class)
 public interface SodiumWorldRendererAccessor {
-
     @Invoker("iterateVisibleBlockEntities")
     void callIterateVisibleBlockEntities(Consumer<BlockEntity> consumer);
 }
-
