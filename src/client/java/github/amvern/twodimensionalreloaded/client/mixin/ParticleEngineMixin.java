@@ -23,7 +23,7 @@ public class ParticleEngineMixin {
         ParticleAccessor accessor = (ParticleAccessor) particle;
         BlockPos pos = new BlockPos((int) accessor.getX(), (int) accessor.getY(), (int) accessor.getZ());
 
-        if (Plane.shouldCull(pos, plane)) {
+        if (Plane.shouldCull(pos)) {
             ci.cancel();
         }
     }

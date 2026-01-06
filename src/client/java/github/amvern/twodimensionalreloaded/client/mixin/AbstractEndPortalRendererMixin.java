@@ -1,7 +1,6 @@
 package github.amvern.twodimensionalreloaded.client.mixin;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -28,11 +27,11 @@ public abstract class AbstractEndPortalRendererMixin<T extends TheEndPortalBlock
 
     @Shadow abstract protected float getOffsetUp();
     @Shadow abstract protected float getOffsetDown();
-    @Shadow abstract void renderFace(EnumSet<Direction> enumSet, Matrix4f matrix4f, VertexConsumer vertexConsumer, float f, float g, float h, float i, float j, float k, float l, float m, Direction direction);
+    @Shadow protected abstract void renderFace(EnumSet<Direction> enumSet, Matrix4f matrix4f, VertexConsumer vertexConsumer, float f, float g, float h, float i, float j, float k, float l, float m, Direction direction);
 
     @Inject(method = "extractRenderState(Lnet/minecraft/world/level/block/entity/TheEndPortalBlockEntity;Lnet/minecraft/client/renderer/blockentity/state/EndPortalRenderState;FLnet/minecraft/world/phys/Vec3;Lnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V", at = @At("HEAD"), cancellable = true)
     public void extractRenderState(T theEndPortalBlockEntity, S endPortalRenderState, float f, Vec3 vec3, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay, CallbackInfo ci) {
-        if (Plane.shouldCull(theEndPortalBlockEntity.getBlockPos(), TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(theEndPortalBlockEntity.getBlockPos())) {
             ci.cancel();
         }
     }

@@ -26,21 +26,15 @@ public class SodiumWorldRendererMixin {
             cancellable = true
     )
     private void cullExtractBlockEntity(BlockEntity blockEntity, PoseStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockDestructionProgress>> progression, LevelRenderState levelRenderState, CallbackInfo ci) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-
-        if(Plane.shouldCull(blockEntity.getBlockPos(), plane)) {
+        if(Plane.shouldCull(blockEntity.getBlockPos())) {
             ci.cancel();
         }
     }
 
     @Inject(method = "iterateVisibleBlockEntities", at = @At("HEAD"), cancellable = true, remap = false)
     private void cullIterateVisibleBlockEntities(Consumer<BlockEntity> consumer, CallbackInfo ci) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-
-        if (plane == null) return;
-
         Consumer<BlockEntity> filtered = blockEntity -> {
-            if (!Plane.shouldCull(blockEntity.getBlockPos(), plane)) {
+            if (!Plane.shouldCull(blockEntity.getBlockPos())) {
                 consumer.accept(blockEntity);
             }
         };

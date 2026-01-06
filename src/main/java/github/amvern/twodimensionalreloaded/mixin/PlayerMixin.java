@@ -38,7 +38,7 @@ public abstract class PlayerMixin extends LivingEntity {
 
             boolean cancel = switch (mode) {
                 case BASE -> !isOnPlane;
-                case FACE_AWAY -> Plane.shouldCull(pos, plane) || dist >= 1.8 || isOnPlane;
+                case FACE_AWAY -> Plane.shouldCull(pos) || dist >= 1.8 || isOnPlane;
             };
 
             if (cancel) cir.setReturnValue(true);

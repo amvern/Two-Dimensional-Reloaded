@@ -1,12 +1,12 @@
 package github.amvern.twodimensionalreloaded.client.mixin.sodium;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.caffeinemc.mods.sodium.client.model.light.data.LightDataAccess;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,12 +21,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LightDataAccessMixin {
 
     @Shadow protected BlockAndTintGetter level;
-    @Shadow private BlockPos.MutableBlockPos pos;
+    @Shadow @Final private BlockPos.MutableBlockPos pos;
 
     @Inject(method = "compute", at = @At("HEAD"), cancellable = true)
     private void plane$computeAsTransparentAir(int x, int y, int z, CallbackInfoReturnable<Integer> cir) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (!plane.shouldCull(new BlockPos(x, y, z), plane)) {
+        if (!Plane.shouldCull(new BlockPos(x, y, z))) {
             return;
         }
 

@@ -66,6 +66,6 @@ public abstract class EntityMixin {
     public void disableRenderingOutsidePlane(CallbackInfoReturnable<Boolean> cir) {
         if ((Object)this instanceof EnderDragon) return;
         if ((Object)this instanceof Player) return;
-        cir.setReturnValue(!Plane.shouldCull(this.blockPosition(), TwoDimensionalReloadedClient.plane));
+        cir.setReturnValue(!Plane.shouldCull(this.blockPosition()));
     }
 }

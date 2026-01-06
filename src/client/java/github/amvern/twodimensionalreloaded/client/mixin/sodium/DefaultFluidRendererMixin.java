@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin.sodium;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.caffeinemc.mods.sodium.client.model.color.ColorProvider;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.buffers.ChunkModelBuilder;
@@ -40,7 +39,7 @@ public class DefaultFluidRendererMixin {
             TextureAtlasSprite[] sprites,
             CallbackInfo ci
     ) {
-        if (Plane.shouldCull(blockPos, TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(blockPos)) {
             ci.cancel();
         }
     }
@@ -57,7 +56,7 @@ public class DefaultFluidRendererMixin {
             CallbackInfoReturnable<Boolean> cir
     ) {
         BlockPos pos = new BlockPos(x, y, z).relative(dir);
-        if (Plane.shouldCull(pos, TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(pos)) {
             cir.setReturnValue(true);
         }
     }
@@ -74,7 +73,7 @@ public class DefaultFluidRendererMixin {
             FluidState fluid,
             CallbackInfoReturnable<Boolean> cir
     ) {
-        if (Plane.shouldCull(pos.relative(dir), TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(pos.relative(dir))) {
             cir.setReturnValue(false);
         }
     }

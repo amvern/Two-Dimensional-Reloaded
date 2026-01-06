@@ -38,7 +38,7 @@ public class LevelRendererMixin {
             CallbackInfo ci
     ) {
         BlockPos targetPos = blockOutlineRenderState.pos();
-        if (Plane.shouldCull(targetPos, TwoDimensionalReloadedClient.plane) || targetPos.getZ() > 1) {
+        if (Plane.shouldCull(targetPos) || targetPos.getZ() > 1) {
             ci.cancel();
             return;
         }

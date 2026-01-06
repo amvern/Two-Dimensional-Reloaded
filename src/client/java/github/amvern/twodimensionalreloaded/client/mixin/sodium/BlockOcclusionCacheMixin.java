@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin.sodium;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;
 import net.minecraft.core.BlockPos;
@@ -20,17 +19,14 @@ public class BlockOcclusionCacheMixin {
      * */
     @Inject(method = "shouldDrawSide", at = @At("HEAD"), cancellable = true)
     private void cullPlane(BlockState selfState, BlockGetter view, BlockPos selfPos, Direction facing, CallbackInfoReturnable<Boolean> cir) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (plane != null) {
-            double dist = plane.sdf(selfPos.getCenter());
+            double dist = Plane.sdf(selfPos.getCenter());
 
             if (dist <= Plane.CULL_DIST) {
                 cir.setReturnValue(false);
             } else if (dist <= 0.5) {
-                if (facing.getStepY() == 0 && plane.sdf(selfPos.relative(facing).getCenter()) <= Plane.CULL_DIST) {
+                if (facing.getStepY() == 0 && Plane.sdf(selfPos.relative(facing).getCenter()) <= Plane.CULL_DIST) {
                     cir.setReturnValue(true);
                 }
             }
-        }
     }
 }

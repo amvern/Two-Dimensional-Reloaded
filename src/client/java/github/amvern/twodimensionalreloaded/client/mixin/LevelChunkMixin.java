@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,8 +26,7 @@ public abstract class LevelChunkMixin {
             BlockState state,
             int flags
     ) {
-        Plane plane = TwoDimensionalReloadedClient.plane;
-        if (Plane.shouldCull(pos, plane)) {
+        if (Plane.shouldCull(pos)) {
             return false;
         }
 

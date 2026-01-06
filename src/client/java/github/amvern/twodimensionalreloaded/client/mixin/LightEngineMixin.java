@@ -41,7 +41,7 @@ public abstract class LightEngineMixin {
         if (plane == null) return;
 
         BlockPos pos = twoDimensionalReloaded$getLightPos();
-        if (pos != null && Plane.shouldCull(pos, plane)) {
+        if (pos != null && Plane.shouldCull(pos)) {
             cir.setReturnValue(state.canOcclude() ? 1 : 0);
         }
     }

@@ -28,16 +28,13 @@ public class Plane {
         return new Vec3(point.x, point.y, z);
     }
 
-    public double sdf(Vec3 point) {
+    public static double sdf(Vec3 point) {
         return point.z - z;
     }
 
-    public static boolean shouldCull(BlockPos blockPos, Plane plane) {
-        if (plane != null) {
-            double dist = plane.sdf(blockPos.getCenter());
-            return dist <= CULL_DIST;
-        }
-        return false;
+    public static boolean shouldCull(BlockPos blockPos) {
+        double dist = Plane.sdf(blockPos.getCenter());
+        return dist <= CULL_DIST;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin.sodium;
 
-import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
 import net.caffeinemc.mods.sodium.client.render.model.MutableQuadViewImpl;
@@ -19,7 +18,7 @@ public class BlockRendererMixin {
      *  */
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     private void cullBlocks(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
-        if (Plane.shouldCull(pos, TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(pos)) {
             ci.cancel();
         }
     }
@@ -27,7 +26,7 @@ public class BlockRendererMixin {
     @Inject(method = "processQuad", at = @At("HEAD"), cancellable = true)
     private void cullQuads(MutableQuadViewImpl quad, CallbackInfo ci) {
         BlockPos pos = ((AbstractBlockRenderContextAccessor) this).getPos();
-        if (Plane.shouldCull(pos, TwoDimensionalReloadedClient.plane)) {
+        if (Plane.shouldCull(pos)) {
             ci.cancel();
         }
     }
