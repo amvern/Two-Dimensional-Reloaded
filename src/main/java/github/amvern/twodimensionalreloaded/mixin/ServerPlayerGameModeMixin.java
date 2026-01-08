@@ -1,7 +1,5 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
-import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
-import github.amvern.twodimensionalreloaded.utils.LayerMode;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
@@ -22,19 +20,10 @@ public class ServerPlayerGameModeMixin {
     @Shadow @Final protected ServerPlayer player;
 
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
-    private void blockMayUseItemAt(ServerPlayer serverPlayer, Level level, ItemStack itemStack, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
+    private void denyUseItemOnServer(ServerPlayer serverPlayer, Level level, ItemStack itemStack, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
         double dist = Plane.sdf(blockHitResult.getBlockPos().getCenter());
-        boolean isOnPlane = blockHitResult.getBlockPos().getCenter().z == Plane.getZ();
-
-        if(this.player instanceof InteractionLayerGetterSetter holder) {
-            LayerMode mode = holder.getInteractionLayer();
-
-            boolean cancel = switch (mode) {
-                case BASE -> !isOnPlane;
-                case FACE_AWAY -> Plane.shouldCull(blockHitResult.getBlockPos()) || dist >= 1.8;
-            };
-
-            if (cancel) cir.setReturnValue(InteractionResult.FAIL);
+        if(Plane.shouldCull(blockHitResult.getBlockPos()) || dist >= 1.8) {
+            cir.setReturnValue(InteractionResult.FAIL);
         }
     }
 }

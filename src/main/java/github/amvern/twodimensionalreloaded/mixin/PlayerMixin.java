@@ -49,7 +49,6 @@ public abstract class PlayerMixin extends LivingEntity {
             level.getEntities(this, AABB.ofSize(position(), 64, 32, 64)).forEach(entity -> {
                 if(!(entity instanceof Player) && !entity.hasAttached(PLANE_ENTITY_FLAG)) {
                     entity.setAttached(PLANE_ENTITY_FLAG, true);
-                    TwoDimensionalReloaded.LOGGER.info("ADDING TO PLANE + " + entity.getType());
                 }
             });
         }
