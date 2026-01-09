@@ -3,6 +3,7 @@ package github.amvern.twodimensionalreloaded.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -12,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(DoorBlock.class)
-public abstract class DoorBlockMixin {
+@Mixin({DoorBlock.class, TrapDoorBlock.class})
+public abstract class NonFullBlockGetShapeMixin {
     @Inject(method = "getShape", at = @At("HEAD"), cancellable = true)
     private void fullBlockInteractionOnly(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir) {
         if(context == CollisionContext.empty()) return;
