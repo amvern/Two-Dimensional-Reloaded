@@ -40,10 +40,12 @@ public abstract class LocalPlayerMixin extends Entity {
 
     @Inject(method = "raycastHitResult", at = @At("RETURN"), cancellable = true)
     private void customRaycast(float partialTicks, Entity cameraEntity, CallbackInfoReturnable<HitResult> cir) {
-        if(cir.getReturnValue().getType() == HitResult.Type.ENTITY) return;
+        if (cir.getReturnValue().getType() == HitResult.Type.ENTITY) return;
 
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.level == null || minecraft.player == null) return;
+        LocalPlayer player = minecraft.player;
+        Level level = minecraft.level;
+        if (level == null || player == null) return;
 
         Camera camera = minecraft.gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.position();
@@ -62,31 +64,27 @@ public abstract class LocalPlayerMixin extends Entity {
             .add(camRight.scale(-mouseNormX * halfFovTan * aspect))
             .add(camUp.scale(mouseNormY * halfFovTan))
             .normalize();
-
         double distanceToPlane = (Plane.getZ() - cameraPos.z) / rayDirection.z;
+
         Vec3 hitPos = cameraPos.add(rayDirection.scale(distanceToPlane));
+        if (TwoDimensionalReloadedClient.faceAway.isDown()) {
+            hitPos = new Vec3(hitPos.x, hitPos.y, 1);
+        }
+        BlockPos hitBlockPos = BlockPos.containing(hitPos);
 
-        BlockPos targetBlock = new BlockPos(
-            (int) Math.floor(hitPos.x),
-            (int) Math.floor(hitPos.y),
-            (TwoDimensionalReloadedClient.faceAway.isDown() ? 1 : 0)
-//            (int) Math.floor(hitPos.z)
-        );
-
-        Vec3 targetCenter = Vec3.atCenterOf(targetBlock);
-        Vec3 delta = cameraPos.subtract(targetCenter);
+        Vec3 delta = cameraPos.subtract(hitBlockPos.getCenter());
         Direction face = (Math.abs(delta.x()) > Math.abs(delta.y())) ?
             delta.x() > 0 ? Direction.EAST : Direction.WEST
             : delta.y() > 0 ? Direction.UP : Direction.DOWN;
 
-        BlockHitResult fakeBlockHit = new BlockHitResult(hitPos, face, targetBlock , false);
+        BlockHitResult fakeBlockHit = new BlockHitResult(hitPos, face, hitBlockPos, false);
 
         boolean hasHorizontalNeighbor = false;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) continue;
-                BlockPos neighbor = targetBlock.offset(dx, dy, 0);
-                if (!minecraft.level.getBlockState(neighbor).isAir()) {
+                BlockPos neighbor = hitBlockPos.offset(dx, dy, 0);
+                if (!level.getBlockState(neighbor).isAir()) {
                     hasHorizontalNeighbor = true;
                     break;
                 }
@@ -94,8 +92,10 @@ public abstract class LocalPlayerMixin extends Entity {
             if (hasHorizontalNeighbor) break;
         }
 
-        if (hasHorizontalNeighbor) {
+        if (hasHorizontalNeighbor || !level.getBlockState(hitBlockPos).isAir()) {
             cir.setReturnValue(fakeBlockHit);
+        } else {
+            cir.setReturnValue(BlockHitResult.miss(hitPos, face, hitBlockPos));
         }
     }
 }

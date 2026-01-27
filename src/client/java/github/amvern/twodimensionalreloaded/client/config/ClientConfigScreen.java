@@ -28,38 +28,61 @@ public class ClientConfigScreen {
             .build()
         );
 
-        placementOutlineCategory.addEntry(entryBuilder.startEnumSelector(Component.literal("Placement Preview Style"), ClientConfig.RenderStyle.class, ClientConfig.blockRenderMode)
+        placementOutlineCategory.addEntry(entryBuilder.startEnumSelector(
+            Component.literal("Placement Preview Style"),
+            ClientConfig.RenderStyle.class, config.blockRenderMode)
             .setDefaultValue(ClientConfig.RenderStyle.GHOST_BLOCK)
             .setSaveConsumer(value -> config.blockRenderMode = value)
             .setEnumNameProvider(style -> Component.nullToEmpty(style.name().replace("_", " ")))
             .build()
         );
 
-        placementOutlineCategory.addEntry(entryBuilder.startBooleanToggle(Component.literal("Show Outline"), config.renderPlacementOutline)
+        placementOutlineCategory.addEntry(entryBuilder.startBooleanToggle(
+            Component.literal("Show Outline"),
+            config.shouldRenderPlacementOutline)
             .setDefaultValue(true)
-            .setSaveConsumer(value -> config.renderPlacementOutline = value)
+            .setSaveConsumer(value -> config.shouldRenderPlacementOutline = value)
             .setTooltip(Component.literal("Render outline around placement preview"))
             .build()
         );
 
-        placementOutlineCategory.addEntry(entryBuilder.startColorField(Component.literal("Placeable Outline"), config.placeableOutlineColor)
+        placementOutlineCategory.addEntry(entryBuilder.startIntSlider(
+            Component.literal("Placement Outline Width"),
+            (int)(config.placementOutlineWidth * 10),
+            (1 * 10),
+            (8 * 10))
+            .setSaveConsumer(value -> config.placementOutlineWidth = value / (float) 10)
+            .setDefaultValue((int)(4f * 10))
+            .setTextGetter(value -> Component.literal(String.format("%.1f", value / (float) 10)))
+            .build()
+        );
+
+        placementOutlineCategory.addEntry(entryBuilder.startColorField(
+            Component.literal("Placeable Outline"),
+            config.placeableOutlineColor)
             .setDefaultValue(0x8000FF00)
             .setAlphaMode(true)
             .setSaveConsumer(value -> config.placeableOutlineColor = fixAlpha(value))
             .build()
         );
 
-        placementOutlineCategory.addEntry(entryBuilder.startColorField(Component.literal("Non-Placeable Outline"), config.nonPlaceableOutlineColor)
+        placementOutlineCategory.addEntry(entryBuilder.startColorField(
+            Component.literal("Non-Placeable Outline"),
+            config.nonPlaceableOutlineColor)
             .setDefaultValue(0x80FF0000)
             .setAlphaMode(true)
             .setSaveConsumer(value -> config.nonPlaceableOutlineColor = fixAlpha(value))
             .build()
         );
 
-        placementOutlineCategory.addEntry(entryBuilder.startTextDescription(Component.literal("Toggle Fog Environments for Water/Lava/Powerdered Snow."))
-            .build());
+        placementOutlineCategory.addEntry(entryBuilder.startTextDescription(
+            Component.literal("Toggle Fog Environments for Water/Lava/Powerdered Snow."))
+            .build()
+        );
 
-        placementOutlineCategory.addEntry(entryBuilder.startBooleanToggle(Component.literal("Render Fog"), config.renderFogEnvironments)
+        placementOutlineCategory.addEntry(entryBuilder.startBooleanToggle(
+            Component.literal("Render Fog"),
+            config.renderFogEnvironments)
             .setDefaultValue(true)
             .setSaveConsumer(value -> config.renderFogEnvironments = value)
             .build()
