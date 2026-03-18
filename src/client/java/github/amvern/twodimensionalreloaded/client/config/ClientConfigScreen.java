@@ -18,6 +18,19 @@ public class ClientConfigScreen {
         ConfigCategory placementOutlineCategory = builder.getOrCreateCategory(Component.literal("Placement Outline"));
 
         placementOutlineCategory.addEntry(entryBuilder.startTextDescription(
+                Component.literal("Camera Options")
+        ).build());
+
+        placementOutlineCategory.addEntry(entryBuilder.startEnumSelector(
+                        Component.literal("Camera Mode"),
+                        ClientConfig.CameraMode.class, config.cameraMode)
+                .setDefaultValue(ClientConfig.CameraMode.DYNAMIC)
+                .setSaveConsumer(value ->config.cameraMode = value)
+                .setEnumNameProvider(style -> Component.nullToEmpty(style.name().replace("_", " ")))
+                .build()
+        );
+
+        placementOutlineCategory.addEntry(entryBuilder.startTextDescription(
             Component.literal("Block Placement Guide Options. Defaults to 32-bit ARGB color. Hex colors like #RRGGBB will automatically become opaque.")
         ).build());
 

@@ -9,6 +9,12 @@ public class ClientConfig implements ConfigData {
     public boolean renderBlockPlacementGuide = false;
     public boolean shouldRenderPlacementOutline = true;
     public RenderStyle blockRenderMode = RenderStyle.GHOST_BLOCK;
+    public CameraMode cameraMode = CameraMode.DYNAMIC;
+
+    public enum CameraMode {
+        STABLE,
+        DYNAMIC
+    }
 
     public enum RenderStyle {
         FULL_BLOCK,

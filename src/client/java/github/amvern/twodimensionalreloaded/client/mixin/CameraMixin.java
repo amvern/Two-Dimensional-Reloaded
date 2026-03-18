@@ -2,6 +2,7 @@ package github.amvern.twodimensionalreloaded.client.mixin;
 
 import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.client.access.MouseNormalizedGetter;
+import github.amvern.twodimensionalreloaded.client.config.ClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -52,7 +53,11 @@ public abstract class CameraMixin {
         twoDimensional$xMouseOffset = Mth.lerp(delta, twoDimensional$xMouseOffset, mouse.twoDimensional$getNormalizedX() * mouseOffsetScale);
         twoDimensional$yMouseOffset = Mth.lerp(delta, twoDimensional$yMouseOffset, mouse.twoDimensional$getNormalizedY() * mouseOffsetScale);
 
-        this.move(-8, (float) twoDimensional$yMouseOffset, (float) -twoDimensional$xMouseOffset);
+        if(TwoDimensionalReloadedClient.CONFIG.cameraMode.equals(ClientConfig.CameraMode.STABLE)) {
+            this.move(-8, 0, 0);
+        } else {
+            this.move(-8, (float) twoDimensional$yMouseOffset, (float) -twoDimensional$xMouseOffset);
+        }
 
         ci.cancel();
     }
