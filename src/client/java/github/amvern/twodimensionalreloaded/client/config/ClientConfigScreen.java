@@ -1,5 +1,6 @@
 package github.amvern.twodimensionalreloaded.client.config;
 
+import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -18,16 +19,15 @@ public class ClientConfigScreen {
         ConfigCategory placementOutlineCategory = builder.getOrCreateCategory(Component.literal("Placement Outline"));
 
         placementOutlineCategory.addEntry(entryBuilder.startTextDescription(
-                Component.literal("Camera Options")
+            Component.literal("Camera Options")
         ).build());
 
-        placementOutlineCategory.addEntry(entryBuilder.startEnumSelector(
-                        Component.literal("Camera Mode"),
-                        ClientConfig.CameraMode.class, config.cameraMode)
-                .setDefaultValue(ClientConfig.CameraMode.DYNAMIC)
-                .setSaveConsumer(value ->config.cameraMode = value)
-                .setEnumNameProvider(style -> Component.nullToEmpty(style.name().replace("_", " ")))
-                .build()
+        placementOutlineCategory.addEntry(entryBuilder.startEnumSelector(Component.literal("Camera Mode"),
+            ClientConfig.CameraMode.class, config.cameraMode)
+            .setDefaultValue(ClientConfig.CameraMode.DYNAMIC)
+            .setSaveConsumer(value ->config.cameraMode = value)
+            .setEnumNameProvider(style -> Component.nullToEmpty(style.name().replace("_", " ")))
+            .build()
         );
 
         placementOutlineCategory.addEntry(entryBuilder.startTextDescription(
@@ -100,6 +100,10 @@ public class ClientConfigScreen {
             .setSaveConsumer(value -> config.renderFogEnvironments = value)
             .build()
         );
+
+        builder.setSavingRunnable(()-> {
+            AutoConfig.getConfigHolder(ClientConfig.class).save();
+        });
 
         return builder.build();
     }
