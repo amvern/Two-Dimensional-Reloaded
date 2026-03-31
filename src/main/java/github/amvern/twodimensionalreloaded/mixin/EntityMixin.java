@@ -6,6 +6,7 @@ import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,7 +30,9 @@ public abstract class EntityMixin {
 
     @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
     public void moveRelative(float speed, Vec3 movementInput, CallbackInfo ci) {
-        if(((Entity)(Object)this).hasAttached(PLANE_ENTITY_FLAG)) {
+        Entity entity = (Entity)(Object)this;
+        if (entity instanceof EnderDragon) return;
+        if((entity).hasAttached(PLANE_ENTITY_FLAG)) {
             movementInput = new Vec3(movementInput.x + movementInput.z * Mth.sign(this.getYRot() - 180), movementInput.y, 0.);
             this.setDeltaMovement(this.getDeltaMovement().add(getInputVector(movementInput, speed, 0f)));
             ci.cancel();
@@ -38,7 +41,9 @@ public abstract class EntityMixin {
 
     @Inject(method = "setDeltaMovement(Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"), cancellable = true)
     public void clampVelocityToPlane(Vec3 velocity, CallbackInfo ci) {
-        if(((Entity)(Object)this).hasAttached(PLANE_ENTITY_FLAG)) {
+        Entity entity = (Entity)(Object)this;
+        if (entity instanceof EnderDragon) return;
+        if((entity).hasAttached(PLANE_ENTITY_FLAG)) {
             this.deltaMovement = Plane.intersectPoint(velocity.add(this.position())).subtract(this.position());
             ci.cancel();
         }
@@ -46,21 +51,27 @@ public abstract class EntityMixin {
 
     @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", shift = At.Shift.AFTER))
     public void clampSetPos(double x, double y, double z, CallbackInfo ci) {
-        if(((Entity)(Object)this).hasAttached(PLANE_ENTITY_FLAG)) {
+        Entity entity = (Entity)(Object)this;
+        if (entity instanceof EnderDragon) return;
+        if((entity).hasAttached(PLANE_ENTITY_FLAG)) {
             this.position = Plane.intersectPoint(new Vec3(x, y, z));
         }
     }
 
     @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;<init>(III)V", shift = At.Shift.AFTER))
     public void clampBlockPos(double x, double y, double z, CallbackInfo ci) {
-        if(((Entity)(Object)this).hasAttached(PLANE_ENTITY_FLAG)) {
+        Entity entity = (Entity)(Object)this;
+        if (entity instanceof EnderDragon) return;
+        if((entity).hasAttached(PLANE_ENTITY_FLAG)) {
             this.blockPosition = BlockPos.containing(Plane.intersectPoint(new Vec3(x, y, z)));
         }
     }
 
     @Inject(method = "absSnapTo(DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V"))
     private void clampPrevPos(double x, double y, double z, CallbackInfo ci, @Local (ordinal = 0) double d, @Local (ordinal = 1) double e) {
-        if(((Entity)(Object)this).hasAttached(PLANE_ENTITY_FLAG)) {
+        Entity entity = (Entity)(Object)this;
+        if (entity instanceof EnderDragon) return;
+        if(entity.hasAttached(PLANE_ENTITY_FLAG)) {
             Vec3 clampedPos = Plane.intersectPoint(new Vec3(d, y, e));
             this.xo = clampedPos.x;
             this.yo = clampedPos.y;

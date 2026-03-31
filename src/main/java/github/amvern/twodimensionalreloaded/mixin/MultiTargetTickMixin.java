@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.animal.nautilus.AbstractNautilus;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.Strider;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.phys.Vec3;
@@ -18,6 +19,7 @@ public class MultiTargetTickMixin {
     @Inject(method = "tick", at = @At("RETURN"))
     private void clampMovementZ(CallbackInfo ci) {
         Entity entity = (Entity)(Object)this;
+        if (entity instanceof EnderDragon) return;
 
         Vec3 delta = entity.getDeltaMovement();
         entity.setDeltaMovement(delta.x, delta.y, 0.0);

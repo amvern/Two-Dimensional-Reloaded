@@ -8,7 +8,7 @@
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin",
-    "SpikeFeatureMixin",
+    "EndSpikeFeatureMixin",
     "ChunkGeneratorStructureStateMixin",
     "BlockPlaceContextMixin",
     "StrongholdPiecesStartPieceMixin",
