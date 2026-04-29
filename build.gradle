@@ -39,7 +39,7 @@ repositories {
     }
 
     maven {
-        url "https://maven.caffeinemc.net/releases" // or /snapshots
+        url "https://maven.caffeinemc.net/releases"
     }
 
     maven { url "https://maven.shedaniel.me/" }

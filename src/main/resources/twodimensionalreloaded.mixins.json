@@ -32,7 +32,8 @@
     "StrongholdPortalRoomMixin",
     "StrongholdPiecesMixin",
     "EnderDragonFightMixin",
-    "EndCityShipMixin"
+    "EndCityShipMixin",
+    "DragonEggBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

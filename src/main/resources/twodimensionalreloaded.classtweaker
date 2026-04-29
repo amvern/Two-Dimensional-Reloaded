@@ -1,4 +1,4 @@
 classTweaker v1 official
 
-accessible class net/caffeinemc/mods/sodium/client/model/light/smooth/AoFaceData
-extendable class net/caffeinemc/mods/sodium/client/model/light/smooth/AoFaceData
+#accessible class net/caffeinemc/mods/sodium/client/model/light/smooth/AoFaceData
+#extendable class net/caffeinemc/mods/sodium/client/model/light/smooth/AoFaceData
