@@ -33,7 +33,9 @@
     "StrongholdPiecesMixin",
     "EnderDragonFightMixin",
     "EndCityShipMixin",
-    "DragonEggBlockMixin"
+    "DragonEggBlockMixin",
+    "FlowingFluidMixin",
+    "LavaFluidMixin"
   ],
   "injectors": {
     "defaultRequire": 1
