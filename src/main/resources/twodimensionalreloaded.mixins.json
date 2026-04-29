@@ -28,7 +28,11 @@
     "AbstractBoatMixin",
     "AbstractHorseMixin",
     "WallSignBlockMixin",
-    "NonFullBlockGetShapeMixin"
+    "NonFullBlockGetShapeMixin",
+    "StrongholdPortalRoomMixin",
+    "StrongholdPiecesMixin",
+    "EnderDragonFightMixin",
+    "EndCityShipMixin"
   ],
   "injectors": {
     "defaultRequire": 1

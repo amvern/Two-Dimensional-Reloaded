@@ -24,6 +24,7 @@
       "github.amvern.twodimensionalreloaded.client.config.ModMenuImpl"
     ]
   },
+  "accessWidener": "twodimensionalreloaded.classtweaker",
   "custom": {
     "modmenu": {
       "links": {

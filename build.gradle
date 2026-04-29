@@ -19,6 +19,8 @@ loom {
             sourceSet sourceSets.client
         }
     }
+
+    accessWidenerPath = file("src/main/resources/twodimensionalreloaded.classtweaker")
 }
 
 
@@ -36,7 +38,10 @@ repositories {
         }
     }
 
-    maven { url "https://maven.caffeinemc.net/releases" }
+    maven {
+        url "https://maven.caffeinemc.net/releases" // or /snapshots
+    }
+
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
 
@@ -50,7 +55,7 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     localRuntime "maven.modrinth:iris:${iris_version}"
-    implementation "net.caffeinemc:sodium-fabric:0.8.7+mc26.1"
+    implementation "net.caffeinemc:sodium-fabric:${sodium_version}"
 
     implementation "me.shedaniel.cloth:cloth-config-fabric:26.1.154"
     api "com.terraformersmc:modmenu:18.0.0-alpha.8"
