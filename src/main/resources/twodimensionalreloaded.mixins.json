@@ -10,7 +10,7 @@
     "ServerPlayerMixin",
     "EndSpikeFeatureMixin",
     "ChunkGeneratorStructureStateMixin",
-    "BlockPlaceContextMixin",
+    "BlockStateBaseMixin",
     "StrongholdPiecesStartPieceMixin",
     "StrongholdPiecesPortalRoomMixin",
     "StructurePieceInvoker",
@@ -35,7 +35,8 @@
     "EndCityShipMixin",
     "DragonEggBlockMixin",
     "FlowingFluidMixin",
-    "LavaFluidMixin"
+    "LavaFluidMixin",
+    "BlockItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

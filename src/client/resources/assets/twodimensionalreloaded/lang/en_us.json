@@ -1,4 +1,6 @@
 {
     "key.category.twodimensionalreloaded.utility": "Two Dimensional: Reloaded",
-    "key.twodimensionalreloaded.face_away": "Face Away"
+    "key.twodimensionalreloaded.face_away": "Face Away",
+    "key.twodimensionalreloaded.enable_placement_guide": "Enable Placement Guide",
+    "key.twodimensionalreloaded.block_rotation_key" : "Set Block Rotation"
 }

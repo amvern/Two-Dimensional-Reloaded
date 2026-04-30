@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
-import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -61,8 +60,6 @@ public class EndSpikeFeatureMixin {
     private void carveSpikeHole(ServerLevelAccessor level, RandomSource random, EndSpikeConfiguration config, EndSpikeFeature.EndSpike spike, CallbackInfo ci) {
         int baseY = level.getHeight(Heightmap.Types.WORLD_SURFACE, spike.getCenterX() + spike.getRadius() + 1,0);
         int tunnelTopY = baseY + 2;
-
-        TwoDimensionalReloaded.LOGGER.info("Spike baseY " + baseY + " Spike topY " + tunnelTopY);
 
         for (int y = baseY; y < tunnelTopY; y++) {
             for (int x = spike.getCenterX() - spike.getRadius(); x <= spike.getCenterX() + spike.getRadius(); x++) {

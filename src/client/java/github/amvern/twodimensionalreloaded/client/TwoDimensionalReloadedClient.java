@@ -24,11 +24,28 @@ import org.lwjgl.glfw.GLFW;
 public class TwoDimensionalReloadedClient implements ClientModInitializer {
     private LayerMode lastMode = LayerMode.BASE;
 
+    public static final KeyMapping.Category UTILITY_CATEGORY =
+        new KeyMapping.Category(
+            Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "utility")
+        );
+
     public static KeyMapping faceAway = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-"key.twodimensionalreloaded.face_away",
+    "key.twodimensionalreloaded.face_away",
         GLFW.GLFW_KEY_B,
-        new KeyMapping.Category(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "utility"))
+        UTILITY_CATEGORY
     ));
+
+    public static KeyMapping enablePlacementGuide = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+    "key.twodimensionalreloaded.enable_placement_guide",
+        GLFW.GLFW_KEY_Y,
+        UTILITY_CATEGORY
+    ));
+
+//    public static KeyMapping blockRotationKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+//            "key.twodimensionalreloaded.block_rotation_key",
+//            GLFW.GLFW_KEY_Y,
+//            UTILITY_CATEGORY
+//    ));
 
     public static ClientConfig CONFIG;
 
@@ -46,6 +63,10 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
             if (client.player == null || client.level == null || client.getConnection() == null) return;
 
             LayerMode mode = faceAway.isDown() ? LayerMode.FACE_AWAY : LayerMode.BASE;
+
+            if(enablePlacementGuide.consumeClick()) {
+                TwoDimensionalReloadedClient.CONFIG.renderBlockPlacementGuide = !TwoDimensionalReloadedClient.CONFIG.renderBlockPlacementGuide;
+            }
 
             if (mode != lastMode) {
                 lastMode = mode;
