@@ -12,6 +12,7 @@
     "DragonEggBlockMixin",
     "EndCityShipMixin",
     "EnderDragonFightMixin",
+    "EndermanMixin",
     "EndSpikeFeatureMixin",
     "EntityMixin",
     "FlowingFluidMixin",

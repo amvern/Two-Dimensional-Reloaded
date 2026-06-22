@@ -11,7 +11,7 @@
     "issues": "https://github.com/amvern/Two-Dimensional-Reloaded/issues"
   },
   "license": "MIT",
-  "icon": "assets/twodimensionalreloaded/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [

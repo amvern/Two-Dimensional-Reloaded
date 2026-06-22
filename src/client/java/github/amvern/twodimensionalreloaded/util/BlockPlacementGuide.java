@@ -48,8 +48,6 @@ public class BlockPlacementGuide {
         if (level == null || player == null) return;
         Camera camera = minecraft.gameRenderer.getMainCamera();
 
-
-
         HitResult hitResult = player.raycastHitResult(0.0f, player);
         if (hitResult.getType().equals(HitResult.Type.ENTITY)) return;
         BlockHitResult blockHit = (BlockHitResult) hitResult;

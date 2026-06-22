@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
