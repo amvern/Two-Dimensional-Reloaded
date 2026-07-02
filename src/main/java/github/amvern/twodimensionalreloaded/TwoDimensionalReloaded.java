@@ -1,7 +1,6 @@
 package github.amvern.twodimensionalreloaded;
 
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
-import github.amvern.twodimensionalreloaded.network.EndermanLookPayload;
 import github.amvern.twodimensionalreloaded.network.InteractionLayerPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -10,8 +9,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.logging.Logger;
@@ -41,11 +38,6 @@ public class TwoDimensionalReloaded implements ModInitializer {
                 InteractionLayerPayload.CODEC
         );
 
-        PayloadTypeRegistry.serverboundPlay().register(
-                EndermanLookPayload.TYPE,
-                EndermanLookPayload.CODEC
-        );
-
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             setPlayerPlane(server, handler.getPlayer());
         });
@@ -60,26 +52,6 @@ public class TwoDimensionalReloaded implements ModInitializer {
                     } catch (Exception err) {
                         LOGGER.info(err.getMessage());
                     }
-                }
-        );
-
-        ServerPlayNetworking.registerGlobalReceiver(
-                EndermanLookPayload.TYPE,
-                (payload, ctx) -> {
-                    ctx.server().execute(() -> {
-
-                        if (!payload.looking()) return;
-
-                        Entity entity = ctx.player().level().getEntity(payload.entityId());
-                        if (!(entity instanceof EnderMan enderman)) return;
-
-                        // 🔒 basic validation
-                        if (ctx.player().distanceTo(enderman) > 32) return;
-
-                        // 👉 do whatever you want here
-                        enderman.setTarget(ctx.player());
-                        TwoDimensionalReloaded.LOGGER.info(enderman.toString());
-                    });
                 }
         );
     }
