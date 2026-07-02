@@ -24,6 +24,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class TwoDimensionalReloadedClient implements ClientModInitializer {
     private LayerMode lastMode = LayerMode.BASE;
+    public boolean precisionModeEnabled = false;
 
     public static final KeyMapping.Category UTILITY_CATEGORY =
         new KeyMapping.Category(
@@ -42,9 +43,15 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
         UTILITY_CATEGORY
     ));
 
-//    public static KeyMapping blockRotationKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-//            "key.twodimensionalreloaded.block_rotation_key",
-//            GLFW.GLFW_KEY_Y,
+    public static KeyMapping screenPeek = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "key.twodimensionalreloaded.screen_peek",
+            GLFW.GLFW_KEY_Z,
+            UTILITY_CATEGORY
+    ));
+
+//    public static KeyMapping precisionPlaceMode = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+//            "key.twodimensionalreloaded.precision_place_mode",
+//            GLFW.GLFW_KEY_G,
 //            UTILITY_CATEGORY
 //    ));
 
@@ -68,6 +75,8 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
             if(enablePlacementGuide.consumeClick()) {
                 TwoDimensionalReloadedClient.CONFIG.renderBlockPlacementGuide = !TwoDimensionalReloadedClient.CONFIG.renderBlockPlacementGuide;
             }
+
+//            precisionModeEnabled = precisionPlaceMode.isDown();
 
             if (mode != lastMode) {
                 lastMode = mode;

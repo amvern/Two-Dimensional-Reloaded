@@ -6,7 +6,6 @@
   "mixins": [
     "AbstractBoatMixin",
     "AbstractHorseMixin",
-    "BlockItemMixin",
     "BlockStateBaseMixin",
     "ChunkGeneratorStructureStateMixin",
     "DragonEggBlockMixin",

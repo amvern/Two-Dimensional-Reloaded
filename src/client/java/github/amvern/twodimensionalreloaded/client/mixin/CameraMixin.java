@@ -65,7 +65,9 @@ public abstract class CameraMixin {
 
     @Unique
     private float twoDimensional$getMouseOffsetScale(Player player) {
+        if(TwoDimensionalReloadedClient.screenPeek.isDown()) return 15;
         if (player == null || !player.isUsingItem()) return 1;
+
         return switch (player.getUseItem().getItem().getDescriptionId()) {
             case "item.minecraft.bow" -> 10;
             case "item.minecraft.spyglass" -> 40;
