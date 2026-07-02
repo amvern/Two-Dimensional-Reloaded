@@ -45,7 +45,7 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
 
     public static KeyMapping screenPeek = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.twodimensionalreloaded.screen_peek",
-            GLFW.GLFW_KEY_Z,
+            GLFW.GLFW_KEY_F,
             UTILITY_CATEGORY
     ));
 
