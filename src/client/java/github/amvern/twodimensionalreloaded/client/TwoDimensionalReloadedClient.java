@@ -5,6 +5,7 @@ import github.amvern.twodimensionalreloaded.client.config.ClientConfig;
 import github.amvern.twodimensionalreloaded.network.InteractionLayerPayload;
 import github.amvern.twodimensionalreloaded.util.BlockPlacementGuide;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
+
 import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -72,7 +73,6 @@ public class TwoDimensionalReloadedClient implements ClientModInitializer {
                 lastMode = mode;
                 ClientPlayNetworking.send(new InteractionLayerPayload(mode));
             }
-
         });
 
         LevelRenderEvents.END_MAIN.register(context -> {
