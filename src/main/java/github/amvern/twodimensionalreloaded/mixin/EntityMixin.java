@@ -6,13 +6,16 @@ import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -27,6 +30,9 @@ public abstract class EntityMixin {
     @Shadow public double xo;
     @Shadow public double yo;
     @Shadow public double zo;
+
+    @Shadow
+    public abstract boolean isCrouching();
 
     @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
     public void moveRelative(float speed, Vec3 movementInput, CallbackInfo ci) {
@@ -76,6 +82,27 @@ public abstract class EntityMixin {
             this.xo = clampedPos.x;
             this.yo = clampedPos.y;
             this.zo = clampedPos.z;
+        }
+    }
+
+    @Inject(method = "canCollideWith", at = @At("TAIL"), cancellable = true)
+    public void cancelCollisionWith(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        if((Entity)(Object)this instanceof Player && entity instanceof LivingEntity && !this.isCrouching()) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "canBeCollidedWith", at = @At("TAIL"), cancellable = true)
+    public void cancelIncomingCollision(Entity other, CallbackInfoReturnable<Boolean> cir) {
+        if((Entity)(Object)this instanceof Player && other instanceof LivingEntity) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "push(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
+    public void cancelPush(Entity entity, CallbackInfo ci) {
+        if((Entity)(Object)this instanceof Player && !this.isCrouching()) {
+            ci.cancel();
         }
     }
 }
