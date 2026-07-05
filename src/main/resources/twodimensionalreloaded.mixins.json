@@ -16,6 +16,7 @@
     "EntityTypeMixin",
     "FlowingFluidMixin",
     "LavaFluidMixin",
+    "LivingEntityMixin",
     "MultifaceBlockMixin",
     "MultiTargetTickMixin",
     "NetherFortressStartPieceMixin",

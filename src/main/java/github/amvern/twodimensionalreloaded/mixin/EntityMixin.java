@@ -3,11 +3,8 @@ package github.amvern.twodimensionalreloaded.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
 
-import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
@@ -34,12 +31,6 @@ public abstract class EntityMixin {
     @Shadow public double xo;
     @Shadow public double yo;
     @Shadow public double zo;
-
-    @Shadow
-    public abstract boolean is(Entity other);
-
-    @Shadow
-    private EntityDimensions dimensions;
 
     @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
     public void moveRelative(float speed, Vec3 movementInput, CallbackInfo ci) {

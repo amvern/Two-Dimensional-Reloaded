@@ -37,7 +37,5 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  },
-  "mixins": [
-  ]
+  }
 }
