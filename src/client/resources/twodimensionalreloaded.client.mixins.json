@@ -4,39 +4,40 @@
   "package": "github.amvern.twodimensionalreloaded.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "AbstractEndPortalRendererMixin",
+    "BlockStateBaseMixin",
     "CameraMixin",
+    "ClientInputMixin",
     "EntityMixin",
     "GuiMixin",
-    "ClientInputMixin",
+    "LavaFogEnvironmentMixin",
+    "LevelChunkMixin",
     "LevelRendererMixin",
+    "LightEngineMixin",
+    "LocalPlayerAccessor",
     "LocalPlayerMixin",
     "MouseHandlerMixin",
     "MultiPlayerGameModeMixin",
     "OptionsMixin",
-    "TheEndPortalBlockEntityMixin",
-    "AbstractEndPortalRendererMixin",
-    "BlockStateBaseMixin",
     "ParticleAccessor",
     "ParticleEngineMixin",
-    "LightEngineMixin",
-    "LevelChunkMixin",
-    "LavaFogEnvironmentMixin",
     "PowderedSnowFogEnvironmentMixin",
     "ScreenEffectRendererMixin",
-    "LocalPlayerAccessor",
-
-    "sodium.LightDataAccessMixin",
+    "TheEndPortalBlockEntityMixin",
     "sodium.AbstractBlockRenderContextAccessor",
-    "sodium.SodiumWorldRendererMixin",
-    "sodium.SodiumWorldRendererAccessor",
     "sodium.AbstractBlockRenderContextMixin",
     "sodium.BlockRendererMixin",
-    "sodium.DefaultFluidRendererMixin"
+    "sodium.DefaultFluidRendererMixin",
+    "sodium.LightDataAccessMixin",
+    "sodium.SodiumWorldRendererAccessor",
+    "sodium.SodiumWorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+  ]
 }

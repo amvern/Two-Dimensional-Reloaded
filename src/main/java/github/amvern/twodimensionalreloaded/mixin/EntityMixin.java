@@ -2,11 +2,14 @@ package github.amvern.twodimensionalreloaded.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
+
+import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -22,17 +25,21 @@ public abstract class EntityMixin {
     @Shadow public abstract void setDeltaMovement(Vec3 velocity);
     @Shadow public abstract Vec3 getDeltaMovement();
     @Shadow protected static Vec3 getInputVector(Vec3 movementInput, float speed, float yaw) {return null;}
-    @Shadow private Vec3 deltaMovement;
-    @Shadow private Vec3 position;
-    @Shadow private BlockPos blockPosition;
+    @Shadow public abstract boolean isCrouching();
     @Shadow public abstract Vec3 position();
     @Shadow public abstract float getYRot();
+    @Shadow private BlockPos blockPosition;
+    @Shadow private Vec3 deltaMovement;
+    @Shadow private Vec3 position;
     @Shadow public double xo;
     @Shadow public double yo;
     @Shadow public double zo;
 
     @Shadow
-    public abstract boolean isCrouching();
+    public abstract boolean is(Entity other);
+
+    @Shadow
+    private EntityDimensions dimensions;
 
     @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
     public void moveRelative(float speed, Vec3 movementInput, CallbackInfo ci) {

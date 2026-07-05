@@ -1,6 +1,5 @@
 package github.amvern.twodimensionalreloaded.client.mixin;
 
-import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import github.amvern.twodimensionalreloaded.client.TwoDimensionalReloadedClient;
 import github.amvern.twodimensionalreloaded.client.access.MouseNormalizedGetter;
 import github.amvern.twodimensionalreloaded.client.config.ClientConfig;
