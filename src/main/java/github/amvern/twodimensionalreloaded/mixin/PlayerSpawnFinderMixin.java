@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class PlayerSpawnFinderMixin {
 
     @ModifyArgs(
-            method = "getOverworldRespawnPos",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;getChunk(II)Lnet/minecraft/world/level/chunk/LevelChunk;"
-            )
+        method = "getOverworldRespawnPos",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/level/ServerLevel;getChunk(II)Lnet/minecraft/world/level/chunk/LevelChunk;"
+        )
     )
     private static void clampGetOverworldRespawnPosZ(Args args) {
         args.set(1, 0);

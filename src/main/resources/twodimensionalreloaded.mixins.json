@@ -37,6 +37,7 @@
     "StrongholdPortalRoomMixin",
     "StructurePieceInvoker",
     "StructurePlacementMixin",
+    "TeleportRandomlyConsumeEffectMixin",
     "WallSignBlockMixin",
     "EntityAiGoals.BeeWanderGoalMixin",
     "EntityAiGoals.DefaultRandomPosMixin",
