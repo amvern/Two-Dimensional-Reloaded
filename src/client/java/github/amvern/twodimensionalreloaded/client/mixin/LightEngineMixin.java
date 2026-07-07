@@ -10,9 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * Sets opacity for culled blocks, allowing light propagation at plane
- * */
+//Inactive, see BlockLightEngineMixin and SkyLightEngineMixin
 @Mixin(LightEngine.class)
 public abstract class LightEngineMixin {
     @Unique
