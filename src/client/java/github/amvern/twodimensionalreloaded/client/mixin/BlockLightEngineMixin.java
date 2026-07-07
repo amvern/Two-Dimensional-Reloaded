@@ -7,11 +7,14 @@ import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.BlockLightEngine;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BlockLightEngine.class)
 public abstract class BlockLightEngineMixin {
+    @Shadow @Final private BlockPos.MutableBlockPos mutablePos;
 
     @WrapOperation(
         method = "propagateIncrease",
@@ -23,10 +26,12 @@ public abstract class BlockLightEngineMixin {
     private int twodimensionalreloaded$blockLightGetOpacity(
         BlockLightEngine instance, BlockState blockState, Operation<Integer> original, @Local(name = "toNode") long toNode
     ) {
-        BlockPos pos = BlockPos.of(toNode);
-
-        if (Plane.shouldCull(pos)) {
-            return blockState.canOcclude() ? 1 : 0;
+        if (Plane.shouldCull(this.mutablePos)) {
+            if(this.mutablePos.getZ() < -1) {
+                return 15;
+            } else {
+                return blockState.canOcclude() ? 1 : 0;
+            }
         }
 
         return original.call(instance, blockState);
