@@ -20,7 +20,7 @@ public class RandomPosMixin {
         cir.setReturnValue(new BlockPos(
             original.getX(),
             original.getY(),
-            (int) Plane.getZ()));
+            Plane.getIntZ()));
     }
 
     @Inject(method = "generateRandomDirectionWithinRadians", at = @At("RETURN"), cancellable = true)
@@ -42,7 +42,7 @@ public class RandomPosMixin {
         cir.setReturnValue(new BlockPos(
             pos.getX(),
             pos.getY(),
-            (int) Plane.getZ()
+            Plane.getIntZ()
         ));
     }
 }

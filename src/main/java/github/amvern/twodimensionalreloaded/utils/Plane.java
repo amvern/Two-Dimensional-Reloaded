@@ -17,6 +17,7 @@ public class Plane {
     public Plane() {}
 
     public static double getZ() { return z; }
+    public static int getIntZ() { return (int) Math.floor(z); }
     public static double getCullDist() { return CULL_DIST; }
 
     public static Vec3 intersectPoint(Vec3 point) {
@@ -32,20 +33,25 @@ public class Plane {
         return dist <= CULL_DIST;
     }
 
+    public static boolean shouldInteract(BlockPos blockPos) {
+        double dist = Plane.sdf(blockPos.getCenter());
+        return dist <= 1.8;
+    }
+
     @Override
     public String toString() {
         return "Plane{z= " + z + " }";
     }
 
     public static final AttachmentType<Boolean> PLANE_ENTITY_FLAG = AttachmentRegistry.create(
-            Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "is_on_plane"),
-            builder -> builder
-                    .initializer(()-> false)
-                    .persistent(Codec.BOOL)
-                    .syncWith(
-                            ByteBufCodecs.BOOL,
-                            AttachmentSyncPredicate.all()
-                    )
-                    .copyOnDeath()
+        Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "is_on_plane"),
+        builder -> builder
+            .initializer(()-> false)
+            .persistent(Codec.BOOL)
+            .syncWith(
+                ByteBufCodecs.BOOL,
+                AttachmentSyncPredicate.all()
+            )
+            .copyOnDeath()
     );
 }

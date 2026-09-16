@@ -1,6 +1,7 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
 import github.amvern.twodimensionalreloaded.utils.Plane;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.InteractionHand;
@@ -21,8 +22,8 @@ public class ServerPlayerGameModeMixin {
 
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
     private void denyUseItemOnServer(ServerPlayer serverPlayer, Level level, ItemStack itemStack, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
-        double dist = Plane.sdf(blockHitResult.getBlockPos().getCenter());
-        if(Plane.shouldCull(blockHitResult.getBlockPos()) || dist >= 1.8) {
+        BlockPos blockHitPos = blockHitResult.getBlockPos();
+        if(Plane.shouldCull(blockHitPos) || !Plane.shouldInteract(blockHitPos)) {
             cir.setReturnValue(InteractionResult.FAIL);
         }
     }

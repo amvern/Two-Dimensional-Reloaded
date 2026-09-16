@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class TeleportRandomlyConsumeEffectMixin {
 
     @ModifyArg(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;randomTeleport(DDDZ)Z"), index = 2)
-    private double applyRetainZ(double zz, @Local(argsOnly = true) LivingEntity user) {
+    private double applyRetainPlayerZ(double zz, @Local(argsOnly = true) LivingEntity user) {
         return user.getZ();
     }
 }

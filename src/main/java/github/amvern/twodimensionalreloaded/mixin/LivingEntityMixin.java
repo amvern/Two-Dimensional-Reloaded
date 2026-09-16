@@ -12,7 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
 
-    @Inject(method = "hasLineOfSight(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/ClipContext$Block;Lnet/minecraft/world/level/ClipContext$Fluid;D)Z", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hasLineOfSight(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/ClipContext$Block;Lnet/minecraft/world/level/ClipContext$Fluid;D)Z",
+        at = @At("HEAD"),
+        cancellable = true
+    )
     public void hasLineOfSightSameZ(Entity target, ClipContext.Block blockCollidingContext, ClipContext.Fluid fluidCollidingContext, double eyeHeight, CallbackInfoReturnable<Boolean> cir) {
         if(target.level() != ((LivingEntity)(Object)this).level()) {
             cir.setReturnValue(false);
@@ -23,5 +26,10 @@ public class LivingEntityMixin {
         if(target.blockPosition().getZ() != ((LivingEntity)(Object)this).blockPosition().getZ()) {
             cir.setReturnValue(false);
         }
+    }
+
+    @Inject(method = "isLookingAtMe", at = @At("HEAD"), cancellable = true)
+    public void isLookingAtMeMouseBound(LivingEntity target, double coneSize, boolean adjustForDistance, boolean seeThroughTransparentBlocks, double[] gazeHeights, CallbackInfoReturnable<Boolean> cir) {
+        //TODO: implement enderman check, probably reference raycasted hit result and see if mouse is directly hovering endermans head
     }
 }

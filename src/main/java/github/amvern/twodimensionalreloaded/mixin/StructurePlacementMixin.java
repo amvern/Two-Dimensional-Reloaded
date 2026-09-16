@@ -19,5 +19,4 @@ public abstract class StructurePlacementMixin {
             cir.setReturnValue(false);
         }
     }
-
 }

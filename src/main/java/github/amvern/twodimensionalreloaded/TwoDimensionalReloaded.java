@@ -2,6 +2,7 @@ package github.amvern.twodimensionalreloaded;
 
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
 import github.amvern.twodimensionalreloaded.network.InteractionLayerPayload;
+import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -21,12 +22,12 @@ public class TwoDimensionalReloaded implements ModInitializer {
 
     public static void setPlayerPlane(MinecraftServer server, ServerPlayer player) {
         BlockPos originalPos = player.blockPosition();
-        int adjustedY = player.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, originalPos.getX(), 0);
+        int adjustedY = player.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, originalPos.getX(), Plane.getIntZ());
 
         server.execute(() -> {
             if(!player.hasAttached(PLANE_ENTITY_FLAG)) {
                 player.setAttached(PLANE_ENTITY_FLAG, true);
-                player.setPosRaw(originalPos.getX() + 0.5, adjustedY, 0.5);
+                player.setPosRaw(originalPos.getX(), adjustedY, Plane.getZ());
             }
         });
     }
@@ -34,25 +35,22 @@ public class TwoDimensionalReloaded implements ModInitializer {
     @Override
     public void onInitialize() {
         PayloadTypeRegistry.serverboundPlay().register(
-                InteractionLayerPayload.TYPE,
-                InteractionLayerPayload.CODEC
+            InteractionLayerPayload.TYPE,
+            InteractionLayerPayload.CODEC
         );
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             setPlayerPlane(server, handler.getPlayer());
         });
 
-        ServerPlayNetworking.registerGlobalReceiver(
-                InteractionLayerPayload.TYPE,
-                (payload, ctx) -> {
-                    try {
-                        ctx.server().execute(() -> {
-                            ((InteractionLayerGetterSetter) ctx.player()).setInteractionLayer(payload.mode());
-                        });
-                    } catch (Exception err) {
-                        LOGGER.info(err.getMessage());
-                    }
-                }
-        );
+        ServerPlayNetworking.registerGlobalReceiver(InteractionLayerPayload.TYPE, (payload, ctx) -> {
+            try {
+                ctx.server().execute(() -> {
+                    ((InteractionLayerGetterSetter) ctx.player()).setInteractionLayer(payload.mode());
+                });
+            } catch (Exception err) {
+                LOGGER.info(err.getMessage());
+            }
+        });
     }
 }

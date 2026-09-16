@@ -1,5 +1,6 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
+import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.util.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.PortalForcer;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -21,10 +23,13 @@ import java.util.Optional;
  * */
 @Mixin(PortalForcer.class)
 public class PortalForcerMixin {
+    @Unique int forcedPortalZ = Plane.getZ() < 0 ? Plane.getIntZ() - 1 : Plane.getIntZ() + 1;
+    @Unique int platformLength = 4;
+    @Unique int defaultPortalHeight = 5;
 
     @Redirect(method = "createPortal", at = @At(value = "INVOKE",target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;setWithOffset(Lnet/minecraft/core/Vec3i;III)Lnet/minecraft/core/BlockPos$MutableBlockPos;"))
     private BlockPos.MutableBlockPos forcePortalZ(BlockPos.MutableBlockPos mutable, Vec3i origin, int x, int y, int z) {
-        BlockPos lockedOrigin = new BlockPos(origin.getX(), origin.getY(), 1);
+        BlockPos lockedOrigin = new BlockPos(origin.getX(), origin.getY(), forcedPortalZ);
         return mutable.setWithOffset(lockedOrigin, x, y, z);
     }
 
@@ -46,15 +51,15 @@ public class PortalForcerMixin {
 //            }
 //        }
 
-        for(int x = 0; x < 4; x++) {
-            for(int y = 0; y < 5; y++) {
-                level.setBlockAndUpdate(new BlockPos((rect.minCorner.getX() + 2) - x, ((rect.minCorner.getY() - 1) + y), 0),Blocks.AIR.defaultBlockState());
+        for(int x = 0; x < platformLength; x++) {
+            for(int y = 0; y < defaultPortalHeight; y++) {
+                level.setBlockAndUpdate(new BlockPos((rect.minCorner.getX() + 2) - x, ((rect.minCorner.getY() - 1) + y), Plane.getIntZ()),Blocks.AIR.defaultBlockState());
             }
         }
 
-        for(int x = 0; x < 4; x++) {
+        for(int x = 0; x < platformLength; x++) {
             BlockState blockState = (dimension == Level.NETHER) ? Blocks.NETHERRACK.defaultBlockState() : Blocks.DIRT.defaultBlockState();
-            level.setBlockAndUpdate(new BlockPos((rect.minCorner.getX() + 2) - x, rect.minCorner.getY() - 2, 0), blockState);
+            level.setBlockAndUpdate(new BlockPos((rect.minCorner.getX() + 2) - x, rect.minCorner.getY() - 2, Plane.getIntZ()), blockState);
         }
     }
 }

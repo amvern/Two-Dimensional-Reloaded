@@ -16,8 +16,7 @@ import net.minecraft.world.phys.Vec3;
 @Mixin(ServerGamePacketListenerImpl.class)
 public class ServerGamePacketListenerImplMixin {
     @Shadow public ServerPlayer player;
-    @Unique
-    Vec3 TwoDimensional$intersectPoint;
+    @Unique Vec3 TwoDimensional$intersectPoint;
 
     // this is kinda jank
     @Inject(method = "teleport(DDDFF)V", at = @At("HEAD"))

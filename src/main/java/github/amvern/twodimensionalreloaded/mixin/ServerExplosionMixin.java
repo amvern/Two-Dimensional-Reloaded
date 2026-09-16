@@ -1,5 +1,6 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
+import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,8 +18,8 @@ public class ServerExplosionMixin {
     private void clampToZ0(CallbackInfoReturnable<List<BlockPos>> cir) {
         List<BlockPos> original = cir.getReturnValue();
         List<BlockPos> filtered = new ArrayList<>(original.stream()
-                .filter(pos -> pos.getZ() == 0)
-                .toList());
+            .filter(Plane::shouldInteract)
+            .toList());
         cir.setReturnValue(filtered);
     }
 }

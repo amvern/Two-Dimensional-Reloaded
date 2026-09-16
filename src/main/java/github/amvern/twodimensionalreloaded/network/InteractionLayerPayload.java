@@ -9,13 +9,13 @@ import net.minecraft.resources.Identifier;
 
 public record InteractionLayerPayload(LayerMode mode) implements CustomPacketPayload {
     public static final Type<InteractionLayerPayload> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "interaction_layer"));
+        new Type<>(Identifier.fromNamespaceAndPath(TwoDimensionalReloaded.MOD_ID, "interaction_layer"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InteractionLayerPayload> CODEC =
-            StreamCodec.of(
-                    (buf, payload) -> buf.writeEnum(payload.mode()),
-                    buf -> new InteractionLayerPayload(buf.readEnum(LayerMode.class))
-            );
+        StreamCodec.of(
+            (buf, payload) -> buf.writeEnum(payload.mode()),
+            buf -> new InteractionLayerPayload(buf.readEnum(LayerMode.class))
+        );
 
     @Override
     public Type<? extends CustomPacketPayload> type() {

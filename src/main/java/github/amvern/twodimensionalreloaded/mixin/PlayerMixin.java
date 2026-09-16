@@ -1,6 +1,8 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
 import static github.amvern.twodimensionalreloaded.utils.Plane.PLANE_ENTITY_FLAG;
+import static github.amvern.twodimensionalreloaded.utils.Plane.shouldInteract;
+
 import github.amvern.twodimensionalreloaded.TwoDimensionalReloaded;
 import github.amvern.twodimensionalreloaded.access.InteractionLayerGetterSetter;
 import github.amvern.twodimensionalreloaded.utils.LayerMode;
@@ -28,7 +30,6 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Inject(method = "blockActionRestricted", at = @At("HEAD"), cancellable = true)
     private void disableBlockBreakingOutsidePlane(Level world, BlockPos pos, GameType gameMode, CallbackInfoReturnable<Boolean> cir) {
-        double dist = Plane.sdf(pos.getCenter());
         boolean isOnPlane = pos.getCenter().z == Plane.getZ();
 
         if (this instanceof InteractionLayerGetterSetter holder) {
@@ -36,7 +37,7 @@ public abstract class PlayerMixin extends LivingEntity {
 
             boolean cancel = switch (mode) {
                 case BASE -> !isOnPlane;
-                case FACE_AWAY -> Plane.shouldCull(pos) || dist >= 1.8 || isOnPlane;
+                case FACE_AWAY -> Plane.shouldCull(pos) || !shouldInteract(pos) || isOnPlane;
             };
 
             if (cancel) cir.setReturnValue(true);

@@ -1,5 +1,6 @@
 package github.amvern.twodimensionalreloaded.mixin;
 
+import github.amvern.twodimensionalreloaded.utils.Plane;
 import net.minecraft.world.level.block.DragonEggBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,6 +12,6 @@ public class DragonEggBlockMixin {
 
     @ModifyArgs(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;offset(III)Lnet/minecraft/core/BlockPos;"))
     private void clampTeleportZ(Args args) {
-        args.set(2, 0);
+        args.set(2, Plane.getIntZ());
     }
 }
