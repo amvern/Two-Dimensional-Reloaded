@@ -49,5 +49,8 @@
   },
   "recommends": {
     "modmenu": "*"
+  },
+  "breaks": {
+    "entityculling": "*"
   }
 }
